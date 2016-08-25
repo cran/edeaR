@@ -35,9 +35,9 @@ processing_time <- function(eventlog,
 		return(processing_time_activity(eventlog = eventlog, units = units, raw = raw))
 	}
 	else if(level_of_analysis == "resource"){
-		return(processing_time_resource(eventlog = eventlog, units = units))
+		return(processing_time_resource(eventlog = eventlog, units = units, raw = raw))
 	}
 	else {
-		return(processing_time_resource_activity(eventlog = eventlog, units = units))
+		return(processing_time_resource_activity(eventlog = eventlog, units = units, raw = raw))
 	}
 }
