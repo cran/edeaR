@@ -13,7 +13,7 @@ ggplot(activity_information) +
 	scale_x_continuous(breaks = seq(0, 1000, by = 100)) + 
 	xlab("Absolute activity frequencies") +
 	ylab("Cumulative percentage") +
-	geom_hline(y = 0.75)
+	geom_hline(aes(yintercept = 0.75))
 
 ## ------------------------------------------------------------------------
 filtered_log <- filter_activity_frequency(BPIC15_1, percentile_cut_off = 0.25, reverse = T)
@@ -50,8 +50,8 @@ bind_rows(start, complete) %>%
 
 ## ----fig.width = 7-------------------------------------------------------
 library(lubridate)
-a <- ymd("20120101")
-b <- ymd("20120331")
+a <- ymd_hms("20120101 00:00:00")
+b <- ymd_hms("20120331 00:00:00")
 filtered_log <- filter_time_period(BPIC15_1, a, b, "contained")
 start <- filtered_log %>% group_by(case_concept.name) %>% summarize(timestamp = min(event_time.timestamp)) %>% mutate(type = "start")
 complete <- filtered_log %>% group_by(case_concept.name) %>% summarize(timestamp = max(event_time.timestamp)) %>% mutate(type = "end")

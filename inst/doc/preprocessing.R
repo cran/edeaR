@@ -39,11 +39,11 @@ data("csv_example", package = "edeaR")
 head(csv_example)
 
 ## ------------------------------------------------------------------------
-csv_example$activity_instance <- 1:nrow(csv_example)
+csv_example$ACTIVITY_INSTANCE <- 1:nrow(csv_example)
 
 ## ----eval = F------------------------------------------------------------
 #  library(tidyr)
-#  csv_example <- gather(csv_example, LIFECYCLE, TIMESTAMP, -CASE, - ACTIVITY, -ACTIVITY_INSTANCE)
+#  csv_example <- gather(csv_example, LIFECYCLE, TIMESTAMP, -CASE, -ACTIVITY, -ACTIVITY_INSTANCE)
 #  head(csv_example)
 
 ## ----echo = F------------------------------------------------------------

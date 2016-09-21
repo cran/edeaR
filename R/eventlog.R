@@ -12,15 +12,13 @@
 #'
 #' @param activity_id The activity classifier of the event log.
 #'
-#' @param resource_id The resource classifier of the event log.
-#'
 #' @param activity_instance_id The activity instance classifier of the event log.
 #'
-#' @param lifecycle_id The life cylce classifier of the event log.
+#' @param lifecycle_id The life cycle classifier of the event log.
 #'
 #' @param timestamp The timestamp of the event log.
-#'  @param resource_id The resource identifier of the event log.
-
+#'
+#' @param resource_id The resource identifier of the event log.
 #'
 #' @seealso \code{\link{case_id}}, \code{\link{activity_id}},
 #' \code{\link{activity_instance_id}},\code{\link{lifecycle_id}},
@@ -81,7 +79,7 @@ eventlog <- function(eventlog,
 	}
 	if(is.null(lifecycle_id)) {
 		if(!is.null(lifecycle_id(eventlog)))
-			message("Recovered existing lifecycle id")
+			message("Recovered existing lifecycle_id")
 		else
 			stop("No lifecycle id provided nor found")
 	}

@@ -10,7 +10,7 @@ activity_specialization(eventlog, level_of_analysis)
 \item{eventlog}{The event log to be used. An object of class
 \code{eventlog}.}
 
-\item{level_of_analysis}{At which level the analysis of  coverage should be performed: case, activity}
+\item{level_of_analysis}{At which level the analysis of coverage should be performed: case, activity}
 }
 \value{
 At the activity level, calculated the number of resources which execute an activity in absolute value and relative to the
@@ -19,6 +19,6 @@ total number of resources.
 At case level, calculates the number of resources which work on the case in absolute value and relative to the total number of resources.
 }
 \description{
-Analyses whether activities are specialize in by specific resources.
+Analyses whether activities are specialized in by specific resources
 }
 
