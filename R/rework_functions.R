@@ -2,22 +2,19 @@ rework_base <- function(eventlog) {
 	eventlog %>%
 		rename_("case_classifier" = case_id(eventlog),
 				"event_classifier" = activity_id(eventlog),
-				"aid" = activity_instance_id(eventlog),
-				"resource_classifier" = resource_id(eventlog),
 				"timestamp_classifier" = timestamp(eventlog)) %>%
-		group_by(case_classifier, event_classifier, resource_classifier, aid) %>%
+		group_by_("case_classifier", "event_classifier", resource_id(eventlog), activity_instance_id(eventlog)) %>%
 		summarize(timestamp = min(timestamp_classifier)) %>%
-		group_by(case_classifier) %>%
+		group_by_("case_classifier") %>%
 		arrange(case_classifier, timestamp) %>%
-		mutate(next_activity = lead(event_classifier),
-			   same_activity = lag(event_classifier == next_activity),
-			   same_activity = ifelse(is.na(same_activity), FALSE, same_activity),
-			   activity_group = paste(case_classifier, cumsum(!same_activity), sep = "-")) %>%
-		select(-next_activity, -same_activity, -aid, -timestamp) -> r
+		mutate(next_activity = lead(event_classifier)) %>%
+		mutate(same_activity = lag(event_classifier == next_activity)) %>%
+		mutate(same_activity = ifelse(is.na(same_activity), FALSE, same_activity)) %>%
+		mutate(activity_group = paste(case_classifier, cumsum(!same_activity), sep = "-")) %>%
+		select(-next_activity, -same_activity, -timestamp) -> r
 
 	colnames(r)[colnames(r) == "case_classifier"] <- case_id(eventlog)
 	colnames(r)[colnames(r) == "event_classifier"] <- activity_id(eventlog)
-	colnames(r)[colnames(r) == "resource_classifier"] <- resource_id(eventlog)
 
 	return(r)
 }
@@ -38,12 +35,16 @@ repeat_selfloops <- function(eventlog) {
 		group_by(event_classifier) %>%
 		mutate(activity_frequency = n()) %>%
 		group_by(case_classifier, activity_group, event_classifier, trace_length, activity_frequency) %>%
-		summarize(length = n() - 1,
+		summarize(t_length = n(),
 				  nr_of_resources = n_distinct(resource_classifier),
-				  resource_classifier = first(resource_classifier)) %>%
-		filter(length > 0, nr_of_resources == 1) %>%
+				  resource_classifier = first(resource_classifier)) -> r
+
+		r <- r[r$nr_of_resources == 1 & r$t_length > 1, ]
+
+	r %>%
+		mutate(length = t_length - 1) %>%
 		ungroup() %>%
-		select(-activity_group, -nr_of_resources) -> r
+		select(-activity_group, -nr_of_resources, -t_length) -> r
 
 	colnames(r)[colnames(r) == "case_classifier"] <- case_id(eventlog)
 	colnames(r)[colnames(r) == "event_classifier"] <- activity_id(eventlog)
@@ -66,13 +67,17 @@ redo_selfloops <- function(eventlog) {
 		group_by(event_classifier) %>%
 		mutate(activity_frequency = n()) %>%
 		group_by(case_classifier, activity_group, event_classifier, trace_length, activity_frequency) %>%
-		summarize(length = n() - 1,
+		summarize(t_length = n(),
 				  nr_of_resources = n_distinct(resource_classifier),
 				  first_resource = first(resource_classifier),
-				  last_resource = last(resource_classifier)) %>%
-		filter(length > 0, nr_of_resources > 1) %>%
+				  last_resource = last(resource_classifier)) -> r
+
+	r <- r[r$t_length > 1 & nr_of_resources > 1, ]
+
+	r %>%
+		mutate(length = t_length - 1) %>%
 		ungroup() %>%
-		select(-activity_group, -nr_of_resources) -> r
+		select(-activity_group, -nr_of_resources, -t_length) -> r
 
 	colnames(r)[colnames(r) == "case_classifier"] <- case_id(eventlog)
 	colnames(r)[colnames(r) == "event_classifier"] <- activity_id(eventlog)
@@ -87,20 +92,14 @@ repeat_selfloops_case <- function(eventlog) {
 
 	cases <- eventlog[,case_id(eventlog)] %>% unique
 
-	colnames(r)[colnames(r) == case_id(eventlog)] <- "case_classifier"
-
 	r %>%
-		group_by(case_classifier) %>%
-		summarize(absolute = n(),
-				  trace_length = first(trace_length)) %>%
+		group_by_(case_id(eventlog), "trace_length") %>%
+		summarize(absolute = n()) %>%
+		merge(cases, all.y = T) %>%
+		mutate(absolute = ifelse(is.na(absolute), 0, absolute)) %>%
 		mutate(relative = absolute/trace_length) %>%
 		select(-trace_length) -> r
 
-	colnames(r)[colnames(r) == "case_classifier"] <- case_id(eventlog)
-
-	r %>% merge(cases, all.y = T) %>%
-		mutate(absolute = ifelse(is.na(absolute), 0, absolute),
-			   relative = ifelse(is.na(relative), 0, relative)) -> r
 
 	return(r)
 }
