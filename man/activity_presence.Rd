@@ -32,4 +32,3 @@ resource_id = "resource")
 activity_presence(log)
 
 }
-

@@ -11,6 +11,15 @@
 #' @importFrom data.table :=
 #' @import bupaR
 #' @import dplyr
+#' @import ggplot2
+#' @import ggthemes
+#' @import tibble
+#' @import shiny
+#' @import miniUI
+#' @import tidyr
+#' @import shinyTime
+#' @importFrom lubridate ymd_hms
+#' @importFrom glue glue
 #' @importFrom stats median
 #' @importFrom stats na.omit
 #' @importFrom stats quantile

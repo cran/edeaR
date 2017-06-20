@@ -30,10 +30,13 @@
 activity_presence <- function(eventlog) {
 	stop_eventlog(eventlog)
 
-	eventlog %>% rename_("case_classifier" = case_id(eventlog)) %>%
-		group_by_(activity_id(eventlog)) %>%
-		summarize("absolute" = n_distinct(case_classifier)) %>%
+	eventlog %>%
+		group_by(!!as.symbol(activity_id(eventlog))) %>%
+		summarize(absolute = n_distinct(!!as.symbol(case_id(eventlog)))) %>%
 		mutate(relative = absolute/n_cases(eventlog)) %>%
-		arrange(-absolute) %>%
-	return()
+		arrange(-absolute) -> output
+
+	class(output) <- c("activity_presence", class(output))
+	attr(output, "mapping") <- mapping(eventlog)
+	return(output)
 }
