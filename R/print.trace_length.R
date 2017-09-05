@@ -1,20 +1,20 @@
-#' @title Idle Time Print
+#' @title Trace length Print
 #'
-#' @description  Print idle time Information
+#' @description  Print Trace length Information
 #' @param x Data to print
 #' @param ... Additional arguments
-#' @method print idle_time
+#' @method print trace_length
 
 #' @export
 
-print.idle_time <- function(x, ...) {
+print.trace_length <- function(x, ...) {
 	data <- x
 
 	if(attr(data, "level") == "log" & is.null(attr(data, "groups"))) {
 		attr(data, "raw") <- NULL
 		attr(data, "level") <- NULL
 		attr(data, "mapping") <- NULL
-		class(data) <- "numeric"
+		class(data) <- c("numeric")
 		print.default(data)
 	}
 	else {
