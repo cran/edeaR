@@ -24,10 +24,10 @@ filter_time_period <- function(eventlog,
 	filter_method <- match.arg(filter_method)
 
 
-	if(!("POSIXct" %in% class(start_point))) {
+	if(!any(c("POSIXct", "Date") %in% class(start_point))) {
 		stop("Start_point should be a date object.")
 	}
-	if(!("POSIXct" %in% class(end_point))) {
+	if(!any(c("POSIXct", "Date") %in% class(end_point))) {
 		stop("End_point should be a date object.")
 	}
 
