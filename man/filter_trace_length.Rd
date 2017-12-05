@@ -2,30 +2,53 @@
 % Please edit documentation in R/filter_trace_length.R
 \name{filter_trace_length}
 \alias{filter_trace_length}
+\alias{filter_trace_length.eventlog}
+\alias{filter_trace_length.grouped_eventlog}
 \alias{ifilter_trace_length}
 \title{Filter: Trace length percentile}
 \usage{
-filter_trace_length(eventlog, lower_threshold = NULL,
-  upper_threshold = NULL, percentile_cut_off = NULL, reverse = F)
+filter_trace_length(eventlog, interval, percentage, reverse, ...)
+
+\method{filter_trace_length}{eventlog}(eventlog, interval = NULL,
+  percentage = NULL, reverse = FALSE, ...)
+
+\method{filter_trace_length}{grouped_eventlog}(eventlog, interval = NULL,
+  percentage = NULL, reverse = FALSE, ...)
 
 ifilter_trace_length(eventlog)
 }
 \arguments{
-\item{eventlog}{The event log to be used. An object of class
-\code{eventlog}.}
+\item{eventlog}{The dataset to be used. Should be a (grouped) eventlog object.}
 
-\item{lower_threshold}{The lower trace length threshold.
-When \code{reverse} is FALSE, all traces with a lower frequency are discarded.}
+\item{interval}{An trace length interval (numeric vector of length 2) to be used for absolute. Half open interval can be created using NA.}
 
-\item{upper_threshold}{The upper trace length threshold.
-When \code{reverse} is FALSE, all traces with a lo frequency are discarded.}
+\item{percentage}{A percentage p to be used for relative filtering.}
 
-\item{percentile_cut_off}{Alternatively to providing thresholds, a percentile cut off can be provided.
-A percentile cut off value of 0.9 will return the 90\% shortest cases.
-When \code{reverse} is set to TRUE, it will return the 10\% longest cases.}
+\item{reverse}{Logical, indicating whether the selection should be reversed.}
 
-\item{reverse}{A logical parameter depicting whether the selection should be reversed.}
+\item{...}{Deprecated arguments.}
+}
+\value{
+When given an eventlog, it will return a filtered eventlog. When given a grouped eventlog, the filter will be applied
+in a stratified way (i.e. each separately for each group). The returned eventlog will be grouped on the same variables as
+the original event log.
 }
 \description{
 Filters cases on length, using a percentile threshold.
+}
+\details{
+This filter can be used by using an interval or by using a percentage.
+The percentage will always start with the shortest cases first and stop
+including cases when the specified percentile is reached. On the other hand, an absolute
+interval can be defined instead to filter cases which have a length in this interval.
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{eventlog}: Filter event log
+
+\item \code{grouped_eventlog}: Filter grouped event log
+}}
+
+\seealso{
+\code{vignette("filters", "edeaR")}
 }

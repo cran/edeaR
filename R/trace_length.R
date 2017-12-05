@@ -1,63 +1,79 @@
-#' @title Metric: Trace length
-#'
-#' @description Computes the length of each trace, in terms of the number of events, at the level of the eventlog or the level of a trace.
-#' The relative numbers at trace level measure trace length compared to the average trace length of the top 80% cases, approximately.
+#' Metric: Trace length
 #'
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
-#' @param level_of_analysis At which level the analysis of  trace_length should be performed: log, case or trace.
+#' Analysis of trace lengths
+#'
+#' This metric provides an overview of the number of activities that occur in each trace.
+#'  In this metric, instances of an activity, as
+#'  opposed to the actual activities, are calculated.
+#'
+#'  \itemize{
+#'
+#'  \item On the level of the log, the number of actual
+#'  transactions in a trace are calculated and aggregated on the log level.
+#'
+#'  \item On the level of the cases, this metric calculates the number of activity instances in each case.
+#'
+#'  \item This metric shows the number of activity instances
+#'  executed in each trace.
+#'  #'
+#'  }
+#'
+#' @inherit throughput_time params
+#' @inherit activity_frequency params references seealso return
 
 #' @export trace_length
 
-trace_length <- function(eventlog,
-						 level_of_analysis = c("log","trace","case")) {
+trace_length <- function(eventlog, level, append, ...) {
+	UseMethod("trace_length")
+}
 
-	stop_eventlog(eventlog)
-	level_of_analysis <- match.arg(level_of_analysis)
-	mapping <- mapping(eventlog)
 
-	FUN <- switch(level_of_analysis,
+#' @describeIn trace_length Trace length for  eventlog
+#' @export
+#'
+trace_length.eventlog <- function(eventlog,
+								  level = c("log","trace","case"),
+								  append = F,
+								  ...) {
+
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+
+	FUN <- switch(level,
 				  log = trace_length_log,
 				  case = trace_length_case,
 				  trace = trace_length_trace)
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-		if(!(level_of_analysis %in% c("log"))) {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) %>%
-				unnest -> output
-		}
-		else {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) -> temp
+	output <- FUN(eventlog = eventlog)
 
-			temp %>%
-				mutate(raw = map(data, attr, "raw")) %>%
-				select(-data) %>%
-				unnest() -> raw
+	return_metric(eventlog, output, level, append, "trace_length", 1)
 
-			temp %>%
-				mutate(data = map(data, ~as.data.frame(as.list(.x)))) %>%
-				unnest() -> output
+}
 
-			attr(output, "raw") <- raw
-		}
 
-		attr(output, "groups") <- groups(eventlog)
+#' @describeIn trace_length Trace length for grouped eventlog
+#' @export
+
+trace_length.grouped_eventlog <- function(eventlog,
+										  level = c("log","trace","case"),
+										  append = F,
+										  ...) {
+
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+
+	FUN <- switch(level,
+				  log = trace_length_log,
+				  case = trace_length_case,
+				  trace = trace_length_trace)
+
+	if(!(level %in% c("log"))) {
+		output <- grouped_metric(eventlog, FUN)
 	}
-	else{
-		output <- FUN(eventlog = eventlog)
+	else {
+		output <- grouped_metric_raw_log(eventlog, FUN)
 	}
 
-	class(output) <- c("trace_length", class(output))
-	attr(output, "level") <- level_of_analysis
-	attr(output, "mapping") <- mapping(eventlog)
-
-	return(output)
-
+	return_metric(eventlog, output, level, append, "trace_length", 1)
 }

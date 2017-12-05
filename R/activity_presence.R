@@ -1,9 +1,11 @@
-#' @title Metric: Activity Presence
+#' Metric: Activity Presence
 #'
-#' @description Calculates for each activity type in what percentage of cases it is present.
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#' Calculates for each activity type in what percentage of cases it is present.
+#'
+#' An indication of variance can be the presence of the activities in the different cases. This metric shows for each activity the absolute
+#' number of cases in which each activity occurs together with its relative presence.
+#'
 #'
 #'
 #' @examples
@@ -24,37 +26,45 @@
 #'
 #'activity_presence(log)
 #' }
+#'
+#' @inherit activity_frequency params references return seealso
+#'
 #' @export activity_presence
 
-
-activity_presence <- function(eventlog) {
-	stop_eventlog(eventlog)
-
-	FUN <- function(eventlog) {
-		eventlog %>%
-			group_by(!!as.symbol(activity_id(eventlog))) %>%
-			summarize(absolute = n_distinct(!!as.symbol(case_id(eventlog)))) %>%
-			mutate(relative = absolute/n_cases(eventlog)) %>%
-			arrange(-absolute) -> output
-		return(output)
-	}
-
-	mapping <- mapping(eventlog)
-
-	if("grouped_eventlog" %in% class(eventlog)) {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) %>%
-				unnest -> output
-		attr(output, "groups") <- groups(eventlog)
-	}
-	else{
-		output <- FUN(eventlog = eventlog)
-	}
-
-
-class(output) <- c("activity_presence", class(output))
-attr(output, "mapping") <- mapping(eventlog)
-return(output)
+activity_presence <- function(eventlog, append) {
+	UseMethod("activity_presence")
 }
+
+#' @describeIn activity_presence Compute activity presence for event log
+#' @export
+
+activity_presence.eventlog <- function(eventlog, append = F) {
+
+	FUN <- activity_presence_FUN
+	output <- FUN(eventlog = eventlog)
+
+
+	return_metric(eventlog, output, "activity", append, "activity_presence")
+}
+
+#' @describeIn activity_presence Compute activity presence for grouped eventlog
+#' @export
+
+activity_presence.grouped_eventlog <- function(eventlog, append = F) {
+
+	FUN <- activity_presence_FUN
+	output <- grouped_metric(eventlog, FUN)
+
+	return_metric(eventlog, output, "activity", append, "activity_presence")
+}
+
+activity_presence_FUN <- function(eventlog) {
+	absolute <- NULL
+	eventlog %>%
+		group_by(!!as.symbol(activity_id(eventlog))) %>%
+		summarize(absolute = n_distinct(!!as.symbol(case_id(eventlog)))) %>%
+		mutate(relative = absolute/n_cases(eventlog)) %>%
+		arrange(-absolute)
+}
+
+

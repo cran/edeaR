@@ -1,66 +1,80 @@
-#' @title Metric: Idle Time
+#'  Metric: Idle Time
 #'
-#' @description Calculates the amount of time that no activity occurs for a case or for a resource. At log level it gives summary statistics of all cases in the log. At trace level it provides summary statistics of all cases related to this case.
-#''
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#'  Calculates the amount of time that no activity occurs.
 #'
-#' @param level_of_analysis At which level the analysis of activity type frequency should be performed: log, trace, case, resource.
+#' \itemize{
+#'
+#' \item  On the level of the complete event log, the
+#'   idle time metric provides an overview of summary statistics of the idle
+#'   time per case, aggregated over the complete event log.
+
+#'\item  The metric applied on the level of the specific
+#'  cases in the event log provides an overview of the total idle time per case
+#'
+#' \item On the level of the different traces that occur in the event log,
+#'  the idle time metric provides an overview of the summary statistics
+#'  of the idle time for each trace in the event log.
+#'
+#' \item The metric can also be of interest on the level of the resources,
+#'  to get an insight in the amount of time each resource \"wastes\" during the process.
+#' }
+#'
+#' @param level Level of granularity for the analysis: log,  case, trace, or resource.
+#' For more information, see \code{vignette("metrics", "edeaR")}
 #'
 #' @param units Time units to be used
 #'
+#' @inherit activity_frequency params references seealso return
+#'
 #' @export idle_time
+#'
+idle_time <- function(eventlog, level, append, units, ...) {
+	UseMethod("idle_time")
+}
 
-idle_time <- function(eventlog,
-							   level_of_analysis = c("log","case","trace","resource"),
-							  	units = c("hours","days", "weeks","mins")) {
-	stop_eventlog(eventlog)
-	level_of_analysis <- match.arg(level_of_analysis)
+#' @describeIn idle_time Compute the idle time for eventlog
+#' @export
+
+idle_time.eventlog <- function(eventlog,
+							   level = c("log","case","trace","resource"),
+							   append = FALSE,
+							   units = c("hours","days", "weeks","mins", "sec"),
+							   ...) {
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
 	units <- match.arg(units)
-	mapping <- mapping(eventlog)
-
-	FUN <- switch(level_of_analysis,
+	FUN <- switch(level,
 				  log = idle_time_log,
 				  case = idle_time_case,
 				  trace = idle_time_trace,
 				  resource = idle_time_resource)
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-		if(level_of_analysis != "log") {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN, units = units)) %>%
-				unnest -> output
-		}
-		else {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN, units = units)) -> temp
+	output <- FUN(eventlog = eventlog, units = units)
+	return_metric(eventlog, output, level, append, "idle_time", 1)
+}
 
-			temp %>%
-				mutate(raw = map(data, attr, "raw")) %>%
-				select(-data) %>%
-				unnest() -> raw
+#' @describeIn idle_time Compute idle time for grouped eventlog
+#' @export
 
-			temp %>%
-				mutate(data = map(data, ~as.data.frame(as.list(.x)))) %>%
-				unnest() -> output
+idle_time.grouped_eventlog <- function(eventlog,
+									   level = c("log","case","trace","resource"),
+									   append = FALSE,
+									   units = c("hours","days", "weeks","mins"),
+									   ...) {
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+	units <- match.arg(units)
 
-			attr(output, "raw") <- raw
-		}
-
-		attr(output, "groups") <- groups(eventlog)
+	FUN <- switch(level,
+				  log = idle_time_log,
+				  case = idle_time_case,
+				  trace = idle_time_trace,
+				  resource = idle_time_resource)
+	if(level != "log") {
+		grouped_metric(eventlog, FUN, units) -> output
 	}
-	else{
-		output <- FUN(eventlog = eventlog, units = units)
+	else {
+		grouped_metric_raw_log(eventlog, FUN, units) -> output
 	}
-
-	class(output) <- c("idle_time", class(output))
-	attr(output, "level") <- level_of_analysis
-	attr(output, "mapping") <- mapping(eventlog)
-	attr(output, "units") <- units
-
-	return(output)
+	return_metric(eventlog, output, level, append, "idle_time", 1)
 }

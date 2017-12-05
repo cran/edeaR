@@ -2,25 +2,48 @@
 % Please edit documentation in R/trace_coverage.R
 \name{trace_coverage}
 \alias{trace_coverage}
+\alias{trace_coverage.eventlog}
+\alias{trace_coverage.grouped_eventlog}
 \title{Metric: Trace coverage}
 \usage{
-trace_coverage(eventlog, level_of_analysis = c("log", "trace", "case"),
-  threshold = NULL)
+trace_coverage(eventlog, level, append, ...)
+
+\method{trace_coverage}{eventlog}(eventlog, level = c("log", "trace", "case"),
+  append = F, ...)
+
+\method{trace_coverage}{grouped_eventlog}(eventlog, level = c("log", "trace",
+  "case"), append = F, ...)
 }
 \arguments{
-\item{eventlog}{The event log to be used. An object of class
+\item{eventlog}{The dataset to be used. Should be a (grouped) eventlog object.
 \code{eventlog}.}
 
-\item{level_of_analysis}{At which level the analysis of  coverage should be performed: log, case or trace.}
+\item{level}{Level of granularity for the analysis: log,  case, activity, resource or resource-activity.
+For more information, see \code{vignette("metrics", "edeaR")}}
 
-\item{threshold}{The threshold to be used for the analysis at log level. Default is at 0.8 (80\%)}
+\item{append}{Logical, indicating whether to append results to original event log. Ignored when level is log or trace.}
+
+\item{...}{Deprecated arguments}
 }
 \description{
 Analyses the structuredness of an event log by use of trace frequencies. Applicable at logn case and trace level
+}
+\details{
+\itemize{
+\item Trace: The absolute and relative frequency of each trace is returned
 
-Trace: The absolute and relative frequency of each trace is returned
+\item Case: for each case, the coverage of the corresponding trace is returned
 
-Case: for each case, the coverage of the corresponding trace is returned
+\item Log: Summary statistics of the coverage of traces is returned.
+}
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{eventlog}: Trace coverage metric for eventlog
 
-Log: The number of traces to cover a certain percentage (default is 80\%) of a log is computed. If a tie exists, the two nearest points are returned.
+\item \code{grouped_eventlog}: Trace coverage metric for grouped eventlog
+}}
+
+\references{
+Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }

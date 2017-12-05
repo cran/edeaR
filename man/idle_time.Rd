@@ -2,20 +2,60 @@
 % Please edit documentation in R/idle_time.R
 \name{idle_time}
 \alias{idle_time}
+\alias{idle_time.eventlog}
+\alias{idle_time.grouped_eventlog}
 \title{Metric: Idle Time}
 \usage{
-idle_time(eventlog, level_of_analysis = c("log", "case", "trace", "resource"),
-  units = c("hours", "days", "weeks", "mins"))
+idle_time(eventlog, level, append, units, ...)
+
+\method{idle_time}{eventlog}(eventlog, level = c("log", "case", "trace",
+  "resource"), append = FALSE, units = c("hours", "days", "weeks", "mins",
+  "sec"), ...)
+
+\method{idle_time}{grouped_eventlog}(eventlog, level = c("log", "case",
+  "trace", "resource"), append = FALSE, units = c("hours", "days", "weeks",
+  "mins"), ...)
 }
 \arguments{
-\item{eventlog}{The event log to be used. An object of class
+\item{eventlog}{The dataset to be used. Should be a (grouped) eventlog object.
 \code{eventlog}.}
 
-\item{level_of_analysis}{At which level the analysis of activity type frequency should be performed: log, trace, case, resource.}
+\item{level}{Level of granularity for the analysis: log,  case, trace, or resource.
+For more information, see \code{vignette("metrics", "edeaR")}}
+
+\item{append}{Logical, indicating whether to append results to original event log. Ignored when level is log or trace.}
 
 \item{units}{Time units to be used}
+
+\item{...}{Deprecated arguments}
 }
 \description{
-Calculates the amount of time that no activity occurs for a case or for a resource. At log level it gives summary statistics of all cases in the log. At trace level it provides summary statistics of all cases related to this case.
-'
+Calculates the amount of time that no activity occurs.
+}
+\details{
+\itemize{
+
+\item  On the level of the complete event log, the
+  idle time metric provides an overview of summary statistics of the idle
+  time per case, aggregated over the complete event log.
+\item  The metric applied on the level of the specific
+ cases in the event log provides an overview of the total idle time per case
+
+\item On the level of the different traces that occur in the event log,
+ the idle time metric provides an overview of the summary statistics
+ of the idle time for each trace in the event log.
+
+\item The metric can also be of interest on the level of the resources,
+ to get an insight in the amount of time each resource \"wastes\" during the process.
+}
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{eventlog}: Compute the idle time for eventlog
+
+\item \code{grouped_eventlog}: Compute idle time for grouped eventlog
+}}
+
+\references{
+Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }

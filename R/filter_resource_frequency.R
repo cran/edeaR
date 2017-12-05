@@ -1,47 +1,99 @@
-#' @title Filter: Resource frequency
+#' @title {Filter: Activity frequency}
 #'
-#' @description Filters the log based on its most frequent resources, until a specific percentile cut off.
+#' @description {Filters the log based on frequency of activities}
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
 #'
-#' @param percentile_cut_off The target coverage of events
-#' A percentile of 0.9 will return the most common resource types of the eventlog, which account for 90\% of the events.
+#' Filtering the event log based in resource frequency can be done in two ways: using an interval of allowed frequencies, or specify a coverage percentage.
 #'
-#' @param reverse A logical parameter depicting whether the selection should be reversed.
+#' \itemize{
+#'
+#' \item percentage: When filtering using a percentage p\%, the filter will return p% of the activity instances, starting from the resource labels with the highest
+#' frequency. The filter will retain additional resource labels as long as the number of activity instances does not exceed the percentage threshold.
+#'
+#' \item interval: When filtering using an interval, resource labels will be retained when their absolute frequency fall in this interval. The interval is specified using
+#' a numeric vector of length 2. Half open intervals can be created by using NA. E.g., `c(10, NA)` will select resource labels which occur 10 times or more.
+#' }
+#'
+#' @param percentage The target coverage of activity instances. A percentile of 0.9 will return the most common resource types of the eventlog,
+#' which account for at least 90\% of the activity instances.
+#'
+#' @param interval An resource frequency interval (numeric vector of length 2). Half open interval can be created using NA.
+#' @inherit filter_activity params references seealso return
 #'
 #' @export filter_resource_frequency
-#'
-filter_resource_frequency <- function(eventlog,
-									  percentile_cut_off = 0.8,
-									  reverse = F) {
-	stop_eventlog(eventlog)
+
+filter_resource_frequency <- function(eventlog, interval, percentage, reverse, ...) {
+	UseMethod("filter_resource_frequency")
+}
+
+#' @describeIn filter_resource_frequency Filter event log
+#' @export
+
+filter_resource_frequency.eventlog <- function(eventlog,
+											   interval = NULL,
+											   percentage = NULL,
+											   reverse = FALSE,
+											   ...) {
+
+	percentage <- deprecated_perc(percentage, ...)
+	stopifnot(is.logical(reverse))
+
 	mapping <- mapping(eventlog)
 
-	act_freq <- resources(eventlog) %>%
+	if(!is.null(interval) && !is.null(percentage)) {
+		stop("Provide interval OR percentage Cannot filter using both methods.")
+	} else if(!is.null(interval)) {
+		stopifnot(is.numeric(interval))
+		if(length(interval) != 2 || any(interval < 0, na.rm = T) || all(is.na(interval))){
+			stop("Interval should be a positive numeric vector of length 2. One of the elements can be NA to create open intervals.")
+		} else {
+			filter_resource_interval(eventlog, interval[1], interval[2], reverse)
+		}
+	} else if(!is.null(percentage)) {
+		stopifnot(is.numeric(percentage))
+		if(length(percentage) != 1 || percentage > 1 || percentage < 0) {
+			stop("percentage should be a numeric vector of length 1 with a value between 0 and 1")
+		} else{
+			filter_resource_percentage(eventlog, percentage, reverse)
+		}
+	} else {
+		stop("No filter arguments were provided. Please provide percentage or interval.")
+	}
+}
+
+filter_resource_interval <- function(eventlog, lower, upper, reverse) {
+	lower <- ifelse(is.na(lower), -Inf, lower)
+	upper <- ifelse(is.na(upper), Inf, upper)
+
+	absolute_frequency <- NULL
+
+	event_selection <- eventlog %>%
+		resources %>%
+		filter(between(absolute_frequency, lower, upper)) %>%
+		pull(1)
+
+	filter_resource(eventlog, event_selection, reverse)
+}
+
+filter_resource_percentage <- function(eventlog, percentage, reverse) {
+	r <- NULL
+	absolute_frequency <- NULL
+	relative_frequency <- NULL
+
+	resources(eventlog) %>%
 		arrange(-absolute_frequency) %>%
-		mutate(r = cumsum(relative_frequency))
+		mutate(r = cumsum(relative_frequency)) %>%
+		filter(dplyr::lag(r, default = 0) < percentage) %>%
+		pull() -> event_selection
 
-	if(reverse == F)
-		event_selection <- act_freq %>% filter(r <= percentile_cut_off)
+	filter_resource(eventlog, event_selection, reverse)
+}
 
-	else
-		event_selection <- act_freq %>% filter(r > percentile_cut_off)
+#' @describeIn filter_resource_frequency Filter grouped event logs
+#' @export
 
-
-	colnames(event_selection)[colnames(event_selection) == resource_id(eventlog)] <- "event_classifier"
-	colnames(eventlog)[colnames(eventlog) == resource_id(eventlog)] <- "event_classifier"
-
-	event_selection <- select(event_selection, event_classifier)
-
-	output <- filter(eventlog, event_classifier %in% event_selection$event_classifier)
-
-	colnames(output)[colnames(output)=="event_classifier"] <- resource_id(eventlog)
-
-	output <- output %>%
-		re_map(mapping)
-
-	return(output)
+filter_resource_frequency.grouped_eventlog <- function(eventlog, interval = NULL, percentage = NULL, reverse = FALSE, ...) {
+	grouped_filter(eventlog, filter_resource_frequency, interval, percentage, reverse, ...)
 }
 
 

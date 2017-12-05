@@ -1,47 +1,63 @@
-#' @title Filter: Activity Presence
+#' Filter: Activity Presence
 #'
-#' @description Filters cases based on the presence (or absence) of activities
+#' Filters cases based on the presence (or absence) of activities
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#' This functions allows to filter cases that contain certain activities.
+#' It requires as input a vector containing one or more activity labels and it has a method
+#' argument. The latter can have the values all, none or one_of.
+#' \itemize{
+#' \item When set to `all`, it means
+#' that all the specified activity labels must be present for a case to be selected
+#' \item `none` means
+#' that they are not allowed to be present.
+#' \item `one_of` means that at least one of them must be
+#' present.
+#' }
 #'
-#' @param activities A vector of activities to withhold.
+#' When only one activity label is supplied, note that methods all and one_of will be identical.
+#'
+#'
+#' @inherit filter_activity params references seealso return
 #'
 #' @param method Filter method. If "all", each of the activities should be present. If "one_of", at least one of them should be present. If "none", none of the activities are allowed to occur in the filtered traces.
 #'
 #' @export filter_activity_presence
-#'
-filter_activity_presence <- function(eventlog,
-							activities = NULL,
-							method = c("all", "one_of", "none")){
-	stop_eventlog(eventlog)
+filter_activity_presence <- function(eventlog, activities, method, reverse) {
+	UseMethod("filter_activity_presence")
+}
 
-	e <- eventlog
-	colnames(e)[colnames(e) == activity_id(e)] <- "event_classifier"
-	colnames(e)[colnames(e) == case_id(e)] <- "case_classifier"
 
+#' @describeIn filter_activity_presence Filter event log on presence of activities.
+#' @export
+
+filter_activity_presence.eventlog <- function(eventlog,
+											  activities = NULL,
+											  method = c("all", "one_of", "none"),
+											  reverse = FALSE){
 	method <- match.arg(method)
 
-	e %>%
-		filter(event_classifier %in% activities) %>%
-		select(event_classifier, case_classifier) %>%
+	eventlog %>%
+		filter_activity(activities) %>%
+		select(!!as.symbol(activity_id(eventlog)), !!as.symbol(case_id(eventlog))) %>%
 		unique() %>%
-		group_by(case_classifier) %>%
+		group_by(!!as.symbol(case_id(eventlog))) %>%
 		summarize(n = n()) -> selection
 
-	selection %>%
-		filter(n == length(activities)) -> selection_all
-
-	if(method == "all")
-		output <- filter_case(eventlog, selection_all$case_classifier)
-
+		if(method == "all")
+		filter_case(eventlog, selection %>% filter(n == length(activities)) %>% pull(1), reverse)
 	else if(method == "one_of")
-		output <- filter_case(eventlog, selection$case_classifier)
+		filter_case(eventlog, selection %>% pull(1), reverse)
 	else if (method == "none")
-		output <- filter_case(eventlog, selection$case_classifier, reverse = T)
+		filter_case(eventlog, selection %>% pull(1), reverse = !reverse)
+}
 
-
-	return(output)
+#' @describeIn filter_activity_presence Filter grouped event log on presence of activities.
+#' @export
+filter_activity_presence.grouped_eventlog <- function(eventlog,
+											  activities = NULL,
+											  method = c("all", "one_of", "none"),
+											  reverse = FALSE) {
+	grouped_filter(eventlog, filter_activity_presence, activities, method)
 }
 
 #' @rdname filter_activity_presence
@@ -57,7 +73,7 @@ ifilter_activity_presence <- function(eventlog) {
 							selectizeInput("selected_activities",
 										   label = "Select activities:",
 										   choices = eventlog %>% pull(!!as.symbol(activity_id(eventlog))) %>%
-										   	unique, selected = NA,  multiple = T), " ",
+										   	unique, selected = NA,  multiple = TRUE), " ",
 							radioButtons("method", "Method: ", choices = c("All" = "all","One of"= "one_of","None" = "none"), selected = "all")
 					),
 					"If \"all\", each of the activities should be present.
@@ -69,8 +85,8 @@ ifilter_activity_presence <- function(eventlog) {
 		observeEvent(input$done, {
 
 			filtered_log <- filter_activity_presence(eventlog,
-													  activities = input$selected_activities,
-													  method = input$method)
+													 activities = input$selected_activities,
+													 method = input$method)
 
 
 			stopApp(filtered_log)

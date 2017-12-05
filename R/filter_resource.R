@@ -1,36 +1,42 @@
-#' @title Filter: Resource
+#' Filter: Resource
 #'
-#' @description Filters the log based on resources
+#' Filters the log based on resource identifiers
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#' #' The method filter_resource can be used to filter on resource identifiers. It has a resources argument,
+#' to which a vector of identifiers can be given. The selection can be negated with the reverse argument.
 #'
-#' @param resources A vector of resources to withhold
+#' @param resources A vector of resources identifiers
 #'
-#' @param reverse A logical parameter depicting whether the selection should be reversed.
+#' @inherit filter_activity params references seealso return
 #'
 #' @export filter_resource
 #'
-filter_resource <- function(eventlog,
-							resources = NULL,
-							reverse = F){
-	stop_eventlog(eventlog)
-	colnames(eventlog)[colnames(eventlog) == resource_id(eventlog)] <- "resource_classifier"
-
-
-	if(reverse == F)
-		output <- filter(eventlog, resource_classifier %in% resources)
-
-	else
-		output <- filter(eventlog, !(resource_classifier %in% resources))
-
-	colnames(output)[colnames(output)=="resource_classifier"] <- resource_id(eventlog)
-
-	output <- re_map(output, mapping(eventlog))
-
-	return(output)
+filter_resource <- function(eventlog, resources, reverse) {
+	UseMethod("filter_resource")
 }
 
+#' @describeIn filter_resource Filter event log
+#' @export
+
+
+filter_resource.eventlog <- function(eventlog,
+							resources,
+							reverse = FALSE){
+
+	if(reverse == F)
+		filter(eventlog, (!!as.symbol(resource_id(eventlog))) %in% resources)
+	else
+		filter(eventlog, !((!!as.symbol(resource_id(eventlog))) %in% resources))
+}
+
+#' @describeIn filter_resource Filter grouped event log
+#' @export
+
+filter_resource.grouped_eventlog <- function(eventlog,
+											 resources,
+											 reverse = FALSE) {
+	grouped_filter(eventlog, filter_resource, resources, reverse)
+}
 
 #' @rdname filter_resource
 #' @export ifilter_resource

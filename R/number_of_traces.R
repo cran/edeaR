@@ -1,33 +1,39 @@
-#' @title Metric: Number of traces
+#'  Metric: Number of traces
 #'
-#' @description Computes how many traces there are. The result is returned as absolute number as well as a relative number.
-#' The relative number refers to the number of traces per 100 cases.
+#' Computes how many traces there are.
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#' This metric provides two values, the absolute and relative number of traces that
+#' occur in the event log. The relative number shows expected number of traces needed to cover 100 cases.
 #'
+
+#' @inherit activity_frequency params references seealso return
 #'
 #'
 #' @export number_of_traces
-
-
-
+#'
 number_of_traces <- function(eventlog) {
-	stop_eventlog(eventlog)
-	FUN <- number_of_traces_intern
-	mapping <- mapping(eventlog)
+	UseMethod("number_of_traces")
+}
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) %>%
-				unnest -> output
-			attr(output, "groups") <- groups(eventlog)
-	}
-	else{
-		output <- FUN(eventlog = eventlog)
-	}
+#' @describeIn number_of_traces Number of traces in eventlog
+#' @export
+
+
+number_of_traces.eventlog <- function(eventlog) {
+	FUN <- number_of_traces_FUN
+	output <- FUN(eventlog = eventlog)
+	class(output) <- c("number_of_traces", class(output))
+	attr(output, "mapping") <- mapping(eventlog)
+	return(output)
+}
+
+#' @describeIn number_of_traces Number of traces in each group of eventlog
+#' @export
+
+number_of_traces.grouped_eventlog <- function(eventlog) {
+	FUN <- number_of_traces_FUN
+
+	grouped_metric(eventlog, FUN) -> output
 
 	class(output) <- c("number_of_traces", class(output))
 	attr(output, "mapping") <- mapping(eventlog)
@@ -36,9 +42,7 @@ number_of_traces <- function(eventlog) {
 
 
 
-number_of_traces_intern <- function(eventlog) {
-
-	stop_eventlog(eventlog)
+number_of_traces_FUN <- function(eventlog) {
 
 	tr <- traces(eventlog)
 

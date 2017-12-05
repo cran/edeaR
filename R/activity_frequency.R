@@ -1,64 +1,84 @@
-#' @title Metric: Activity Frequency
+#' Metric: Activity Frequency
 #'
-#' @description Provides summary statistics about the frequency of activity types at the level of traces, cases, resources or activity types.
-#''
-#' @param eventlog The event log to be used. An object of class
+#'
+#' Provides summary statistics about the frequency of activity types at the level of log, traces, cases, activity types.
+#'
+#'
+#' \itemize{ \item At log level, This metric shows the summary statistics of the frequency of activities throughout the complete event log.
+#' \item  On the level of the cases, this metric showsthe absolute and relative number of times the different activity types occur in
+#' each case. The absolute number shows the number of distinct activity types
+#' that occur in each of the cases. The relative number is calculated based on the total activity executions in the case. \item On trace level, this metric
+#' presents the absolute and relative number of times a specific activity type occurs in each trace. \item On the level of the activities, this metric
+#' provides the absolute and relative frequency of a specific activity in the complete event log.
+#' }
+#'
+#'
+#' @param eventlog The dataset to be used. Should be a (grouped) eventlog object.
 #' \code{eventlog}.
 #'
-#' @param level_of_analysis At which level the analysis of activity type frequency should be performed: log, trace, case, activity.
+#' @param level Level of granularity for the analysis: log, trace, case, activity. For more information, see \code{vignette("metrics", "edeaR")}
+#' @param append Logical, indicating whether to append results to original event log. Ignored when level is log or trace.
+#' @param ... Deprecated arguments
+#'
+#' @references Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 #'
 #' @export activity_frequency
 
-activity_frequency <- function(eventlog,
-									level_of_analysis = c("log","trace","activity","case")) {
-	stop_eventlog(eventlog)
-
-	level_of_analysis <- match.arg(level_of_analysis)
+activity_frequency <- function(eventlog, level,  append, ...) {
+	UseMethod("activity_frequency")
+}
 
 
-	FUN <- switch(level_of_analysis,
+#' @describeIn activity_frequency Compute activity frequency for eventlog
+#' @export
+
+activity_frequency.eventlog <- function(eventlog,
+										level = c("log","trace","activity","case"),
+										append = F,
+										...) {
+
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+
+	FUN <- switch(level,
 				  log = activity_frequency_log,
 				  case = activity_frequency_case,
 				  trace = activity_frequency_trace,
 				  activity = activity_frequency_activity)
 
-	mapping <- mapping(eventlog)
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-		if(level_of_analysis != "log") {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) %>%
-				unnest -> output
-		}
-		else {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) -> temp
+	output <- FUN(eventlog = eventlog)
 
-			temp %>%
-				mutate(raw = map(data, attr, "raw")) %>%
-				select(-data) %>%
-				unnest() -> raw
+	return_metric(eventlog, output, level, append, "activity_frequency")
 
-			temp %>%
-				mutate(data = map(data, ~as.data.frame(as.list(.x)))) %>%
-				unnest() -> output
+}
 
-			attr(output, "raw") <- raw
-		}
 
-		attr(output, "groups") <- groups(eventlog)
+#' @describeIn activity_frequency Compute activity frequency for grouped event log
+#' @export
+
+activity_frequency.grouped_eventlog <- function(eventlog,
+												level = c("log","trace","activity","case"),
+												append = F,
+												...) {
+	level <- match.arg(level)
+
+	level <- deprecated_level(level, ...)
+
+	FUN <- switch(level,
+				  log = activity_frequency_log,
+				  case = activity_frequency_case,
+				  trace = activity_frequency_trace,
+				  activity = activity_frequency_activity)
+
+	if(level != "log") {
+		grouped_metric(eventlog, FUN) -> output
 	}
-	else{
-		output <- FUN(eventlog = eventlog)
+	else {
+		grouped_metric_raw_log(eventlog, FUN) -> output
 	}
 
-	class(output) <- c("activity_frequency", class(output))
-	attr(output, "level") <- level_of_analysis
-	attr(output, "mapping") <- mapping(eventlog)
+	return_metric(eventlog, output, level, append, "activity_frequency")
 
-	return(output)
+
 }

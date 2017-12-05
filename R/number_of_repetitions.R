@@ -1,83 +1,147 @@
 
-#' @title Metric:  Number of repetitions
+#' Metric:  Number of repetitions
 #'
-#' @description  Provides summuary statistics on the number of repetitions, at the level of activity types, traces, cases and the eventlog.
+#' Provides information statistics on the number of repetitions
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
 #'
-#' @param type The type of repetitions, either repeat or redo
+#' A repetition is an execution
+#' of an activity within a case while that activity has already been executed before, but
+#' one or more other activities are executed in between.Similar to the self-loop metric, a distinction
+#' should be made between repeat and redo repetitions.
+#' Repeat repetitions are activity executions of the same activity type that are executed
+#' not immediately following each other, but by the same resource. Redo repetitions
+#' are activity executions of the same activity type that are executed not immediately
+#' following each other and by a different resource than the first activity occurrence of
+#' this activity type.
 #'
-#' @param level_of_analysis At which level the analysis of repetitions should be performed: log, case, activity, resource, resource-activity.
 #'
+#' \itemize{
+#'
+#' \item The number of repetitions can be calculated on the level of the complete event log. This metric shows the
+#' summary statistics of the number of repetitions within a case, which can provide
+#' insights in the amount of waste in an event log. Each combination of two or more
+#' occurrences of the same activity, executed not immediately following each other,
+#' by the same resource is counted as one repeat repetition of this activity.
+#'
+#' \item On case level, this metric provides the absolute and relative number of repetitions in each case.
+#'
+#' \item On the level of specific activities, this metric shows which activities occur the most in a repetition.
+#' The absolute and relative number of both repeat and redo repetitions is
+#' provided by this metric, giving an overview per activity.
+#'
+#' \item When looking at the different resources executing activities in the event log, it can be interesting to have an overview
+#' of which resources need more than one time to execute an activity in a case or
+#' which resources need to have an activity redone later on in the case by another
+#' resource. This metric provides the absolute and relative number of times each
+#' resource appears in a repetition.
+#'
+#' \item Finally, the same metric can be
+#' looked at on the level of specific resource-activity combinations, providing the
+#'  company with specific information about which activities and which resources
+#'  are involved in the repetitions. For this metric the absolute and relative number
+#'   of repeat and redo repetitions is provided. Again two difierent relative numbers
+#'   are provided, one relative to the total number of executions of the activity in the
+#'   complete event log, and one relative to the total number of executions performed
+#'   by the resource throughout the complete event log.
+#' }
+#'
+#' @param type The type of repetitions, either repeat or redo.
+#'
+#'
+#' @inherit end_activities params
+#' @inherit activity_frequency params references seealso return
 #'
 #' @export number_of_repetitions
 
 
-number_of_repetitions <- function(eventlog,
-								  type = c("repeat","redo"),
-						level_of_analysis = c("log","case","activity","resource","resource-activity")){
+number_of_repetitions <- function(eventlog, type, level, append, ...) {
+	UseMethod("number_of_repetitions")
+}
 
-	stop_eventlog(eventlog)
-	mapping <- mapping(eventlog)
+#' @describeIn number_of_repetitions Apply metric on event log
+#' @export
+
+number_of_repetitions.eventlog <- function(eventlog,
+								  type = c("repeat","redo"),
+								  level = c("log","case","activity","resource","resource-activity"),
+								  append = FALSE,
+								  ...){
 	type <- match.arg(type)
-	level_of_analysis <- match.arg(level_of_analysis)
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
 
 	if(type == "repeat") {
-		FUN <- switch(level_of_analysis,
-			   log = repeat_repetitions_log,
-			   case = repeat_repetitions_case,
-			   activity = repeat_repetitions_activity,
-			   resource = repeat_repetitions_resource,
-			   "resource-activity" = repeat_repetitions_resource_activity
+		FUN <- switch(level,
+					  log = repeat_repetitions_log,
+					  case = repeat_repetitions_case,
+					  activity = repeat_repetitions_activity,
+					  resource = repeat_repetitions_resource,
+					  "resource-activity" = repeat_repetitions_resource_activity
 		)
 	}
 	else if (type == "redo") {
-		FUN <- switch(level_of_analysis,
-			   log = redo_repetitions_log,
-			   case = redo_repetitions_case,
-			   activity = redo_repetitions_activity,
-			   resource = redo_repetitions_resource,
-			   "resource-activity" = redo_repetitions_resource_activity
+		FUN <- switch(level,
+					  log = redo_repetitions_log,
+					  case = redo_repetitions_case,
+					  activity = redo_repetitions_activity,
+					  resource = redo_repetitions_resource,
+					  "resource-activity" = redo_repetitions_resource_activity
+		)
+	}
+
+	output <- FUN(eventlog = eventlog)
+
+	output <- return_metric(eventlog, output, level, append, "number_of_repetitions", ifelse(level == "resource-activity", 3,2))
+	attr(output, "type") <- type
+
+	return(output)
+
+}
+
+
+#' @describeIn number_of_repetitions Apply metric on grouped eventlog
+#' @export
+
+number_of_repetitions.grouped_eventlog <- function(eventlog,
+												   type = c("repeat","redo"),
+												   level = c("log","case","activity","resource","resource-activity"),
+												   append = F,
+												   ...){
+
+	type <- match.arg(type)
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+
+	if(type == "repeat") {
+		FUN <- switch(level,
+					  log = repeat_repetitions_log,
+					  case = repeat_repetitions_case,
+					  activity = repeat_repetitions_activity,
+					  resource = repeat_repetitions_resource,
+					  "resource-activity" = repeat_repetitions_resource_activity
+		)
+	}
+	else if (type == "redo") {
+		FUN <- switch(level,
+					  log = redo_repetitions_log,
+					  case = redo_repetitions_case,
+					  activity = redo_repetitions_activity,
+					  resource = redo_repetitions_resource,
+					  "resource-activity" = redo_repetitions_resource_activity
 		)
 
 	}
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-		if(level_of_analysis != "log") {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) %>%
-				unnest -> output
-		}
-		else {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) -> temp
-
-			 temp %>%
-			 	mutate(raw = map(data, attr, "raw")) %>%
-			 	select(-data) %>%
-			 	unnest() -> raw
-
-			temp %>%
-				mutate(data = map(data, ~as.data.frame(as.list(.x)))) %>%
-				unnest() -> output
-
-			attr(output, "raw") <- raw
-		}
-
-		attr(output, "groups") <- groups(eventlog)
+	if(level != "log") {
+		grouped_metric(eventlog, FUN) -> output
 	}
-	else{
-		output <- FUN(eventlog = eventlog)
+	else {
+		grouped_metric_raw_log(eventlog, FUN) -> output
 	}
 
-	class(output) <- c("number_of_repetitions", class(output))
-	attr(output, "level") <- level_of_analysis
-	attr(output, "mapping") <- mapping(eventlog)
+
+
+	output <- return_metric(eventlog, output, level, append, "number_of_repetitions", ifelse(level == "resource-activity", 3,2))
 	attr(output, "type") <- type
 
 	return(output)

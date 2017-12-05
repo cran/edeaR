@@ -1,71 +1,96 @@
-#' @title Metric: Resource frequency
+#' Metric: Resource frequency
 #'
-#' @description Analyses the frequency of resources at different levels of analysis
+#' Analyses the frequency of resources at different levels of analysis
 #'
+#' Comparable to the concept of the activity frequency the frequency of resources in a business process can
+#' also be very insightful for companies, e.g., during company restructuring.
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#' \itemize{
+#' \item On the level of the complete event log, summary statistics show the number of times
+#' a resource executes an activity in the complete event log.
 #'
-#' @param level_of_analysis At which level the analysis of  coverage should be performed: log, case, activity, resource, resource-activity.
+#' \item To get a better view on the variance between the different cases,
+#' the summary statistics of the frequency of resources can be
+#' calculated on the level of the cases. This way, a company gets an insight in the
+#' number of different resources working on each case together with the number
+#' of activities a resource executes per case.
 #'
+#' \item At the level of the different activities, the
+#' resource frequency states how many different resources are executing a specific
+#' activity in the complete event log.
 #'
+#' \item At the level of the distinct resources in
+#' the event log, this metric simply shows the absolute and relative frequency of
+#' occurrences of each resource in the complete event log.
+#'
+#' \item Finally, at the most specific level of analysis, the absolute and relative number of times each resource-activity
+#' level occurs in the complete event log can be calculated. Two different relative
+#' numbers are provided here, one from the resource perspective and one from
+#' the activity perspective. At the resource perspective, the denominator is the
+#' total number of executions by the resource under consideration. At the activity
+#' perspective, the denominator is the total number of occurrences of the activity
+#' under consideration.
+#' }
+#'
+#' @inherit end_activities params
+#' @inherit activity_frequency params references seealso return
 #' @export resource_frequency
 
 
-resource_frequency <- function(eventlog, level_of_analysis = c("log","case","activity","resource","resource-activity")) {
-	stop_eventlog(eventlog)
-	mapping <- mapping(eventlog)
-	level_of_analysis <- match.arg(level_of_analysis)
+resource_frequency <- function(eventlog, level, append, ...) {
+	UseMethod("resource_frequency")
+}
 
-	FUN <- switch(level_of_analysis,
+#' @describeIn resource_frequency Resource frequency for eventlog
+#' @export
+
+
+resource_frequency.eventlog <- function(eventlog,
+							   level = c("log","case","activity","resource","resource-activity"),
+							   append = F,
+							   ...) {
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+
+	FUN <- switch(level,
 				  log = resource_frequency_log,
 				  case = resource_frequency_case,
 				  activity = resource_frequency_activity,
 				  resource = resource_frequency_resource,
 				  "resource-activity" = resource_frequency_resource_activity)
 
+	output <- FUN(eventlog = eventlog)
+
+	return_metric(eventlog, output, level, append, "resource_frequency", ifelse(level == "resource", 2,
+																				ifelse(level == "resource-activity", 3,9)))
+}
 
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-		if(!(level_of_analysis %in% c("log"))) {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) %>%
-				unnest -> output
+#' @describeIn resource_frequency Resource frequency for grouped eventlog
+#' @export
+
+resource_frequency.grouped_eventlog <- function(eventlog,
+							   level = c("log","case","activity","resource","resource-activity"),
+							   append = F,
+							   ...) {
+
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+
+	FUN <- switch(level,
+				  log = resource_frequency_log,
+				  case = resource_frequency_case,
+				  activity = resource_frequency_activity,
+				  resource = resource_frequency_resource,
+				  "resource-activity" = resource_frequency_resource_activity)
+
+		if(!(level %in% c("log"))) {
+			grouped_metric(eventlog, FUN) -> output
 		}
 		else {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN)) -> temp
-
-			temp %>%
-				mutate(raw = map(data, attr, "raw")) %>%
-				select(-data) %>%
-				unnest() -> raw
-
-			temp %>%
-				mutate(data = map(data, ~as.data.frame(as.list(.x)))) %>%
-				unnest() -> output
-
-			attr(output, "raw") <- raw
+			grouped_metric_raw_log(eventlog, FUN)  -> output
 		}
 
-		attr(output, "groups") <- groups(eventlog)
-	}
-	else{
-		output <- FUN(eventlog = eventlog)
-	}
-
-	class(output) <- c("resource_frequency", class(output))
-	attr(output, "level") <- level_of_analysis
-	attr(output, "mapping") <- mapping(eventlog)
-	attr(output, "units") <- units
-
-	return(output)
-
-
-
-
+	return_metric(eventlog, output, level, append, "resource_frequency", ifelse(level == "resource", 2,
+																				ifelse(level == "resource-activity", 3,9)))
 }

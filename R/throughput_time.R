@@ -1,74 +1,98 @@
-#' @title Metric: Throughput time of cases
+#' Metric: Throughput time of cases
 #'
-#' @description  Provides summary statistics concerning the throughput times of cases.
-#' The throughput time of cases is defined as the time between the start of the first event and the completion of the last event.
-#' Can be performed at the level of the log as well as the level of traces and cases.
 #'
-#' @param eventlog The event log to be used. An object of class
-#' \code{eventlog}.
+#' Provides summary statistics concerning the throughput times of cases.
 #'
-#' @param units The time unit in which the throughput times should be reported.
 #'
-#' @param level_of_analysis At which level the analysis of throughput times should be performed: log, case or trace.
+#'
+#' \itemize{
+#'
+#' \item The throughput time of a case is the total duration
+#' of the case, or the difference between the timestamp of the end event and the
+#' timestamp of the start event of the case. Possible idle time is also included
+#' in this calculation.
+#' \item On log level, the summary statistics of these throughput to describe the throughput time of cases in an
+#' aggregated fashion.
+#' \item Instead of looking at all cases in the log, it
+#' can be interesting to analyse the different process variants or traces in the log
+#' }
+#'
+#'
+#'
+#' @param level Level of granularity for the analysis: log,  case, activity, resource or resource-activity.
+#' For more information, see \code{vignette("metrics", "edeaR")}
+#'
+#'
+#' @inherit activity_frequency params references seealso return
+#' @inherit idle_time params
+#'
 #'
 #'
 #' @export throughput_time
 #'
 
-throughput_time <- function(eventlog,
-							level_of_analysis = c("log","trace","case"),
-							units = c("days", "hours","mins","weeks")){
 
-	stop_eventlog(eventlog)
+throughput_time <- function(eventlog, level, append, units, ...) {
+	UseMethod("throughput_time")
+}
 
-	level_of_analysis <- match.arg(level_of_analysis)
+#' @describeIn throughput_time Throughput time for eventlog
+#' @export
+
+
+throughput_time.eventlog <- function(eventlog,
+									 level = c("log","trace","case"),
+									 append = FALSE,
+									 units = c("days", "hours","mins","weeks"),
+									 ...){
+
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
 	units <- match.arg(units)
 
 
-	FUN <- switch(level_of_analysis,
+	FUN <- switch(level,
 				  log = throughput_time_log,
 				  case = throughput_time_case,
 				  trace = throughput_time_trace)
 
-	mapping <- mapping(eventlog)
 
-	if("grouped_eventlog" %in% class(eventlog)) {
-		if(level_of_analysis != "log") {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN, units = units)) %>%
-				unnest -> output
-		}
-		else {
-			eventlog %>%
-				nest %>%
-				mutate(data = map(data, re_map, mapping)) %>%
-				mutate(data = map(data, FUN, units = units)) -> temp
+	output <- FUN(eventlog = eventlog, units = units)
 
-			temp %>%
-				mutate(raw = map(data, attr, "raw")) %>%
-				select(-data) %>%
-				unnest() -> raw
+	output <- return_metric(eventlog, output, level, append, "throughput_time", 1)
+	attr(output, "units") <- units
 
-			temp %>%
-				mutate(data = map(data, ~as.data.frame(as.list(.x)))) %>%
-				unnest() -> output
+	return(output)
+}
 
-			attr(output, "raw") <- raw
-		}
 
-		attr(output, "groups") <- groups(eventlog)
+#' @describeIn throughput_time Throughput time for grouped eventlog
+#' @export
+
+throughput_time.grouped_eventlog <- function(eventlog,
+											 level = c("log","trace","case"),
+											 append = FALSE,
+											 units = c("days", "hours","mins","weeks"),
+											 ...){
+
+	level <- match.arg(level)
+	level <- deprecated_level(level, ...)
+	units <- match.arg(units)
+
+	FUN <- switch(level,
+				  log = throughput_time_log,
+				  case = throughput_time_case,
+				  trace = throughput_time_trace)
+
+
+	if(level != "log") {
+		grouped_metric(eventlog, FUN, units) -> output
 	}
-	else{
-		output <- FUN(eventlog = eventlog, units = units)
+	else {
+		grouped_metric_raw_log(eventlog, FUN, units) -> output
 	}
 
-
-
-	class(output) <- c("throughput_time", class(output))
-	attr(output, "level") <- level_of_analysis
-	attr(output, "mapping") <- mapping(eventlog)
+	output <- return_metric(eventlog, output, level, append, "throughput_time", 1)
 	attr(output, "units") <- units
 
 	return(output)
