@@ -33,6 +33,7 @@ filter_trim.eventlog <- function(eventlog,
 
 	acts <- activities(eventlog) %>% pull(1)
 
+	min_order <- NULL
 	min_timestamp <- NULL
 	start_r <- NULL
 	end_r <- NULL
@@ -47,9 +48,10 @@ filter_trim.eventlog <- function(eventlog,
 
 	eventlog %>%
 		group_by(!!case_id_(eventlog), !!activity_instance_id_(eventlog), !!activity_id_(eventlog)) %>%
-		summarize(min_timestamp = min(!!timestamp_(eventlog))) %>%
+		summarize(min_timestamp = min(!!timestamp_(eventlog)), "min_order" = min(.order)) %>%
 		group_by(!!case_id_(eventlog)) %>%
-		mutate(r = dense_rank(min_timestamp)) %>%
+		arrange(min_timestamp, min_order) %>%
+		mutate(r = 1:n()) %>%
 		mutate(start_r = ifelse((!!activity_id_(eventlog)) %in% start_activities, r, NA),
 			   end_r = ifelse((!!activity_id_(eventlog)) %in% end_activities, r, NA)) %>%
 		mutate(min_rank = min(c(Inf,start_r), na.rm = T)) %>%

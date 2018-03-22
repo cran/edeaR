@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2017-12-05" />
+<meta name="date" content="2018-03-22" />
 
 <title>Filters</title>
 
@@ -70,11 +70,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author"><em>Gert Janssenswillen</em></h4>
-<h4 class="date"><em>2017-12-05</em></h4>
+<h4 class="date"><em>2018-03-22</em></h4>
 
 
 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bupaR)</code></pre></div>
+<pre><code>## Loading required package: edeaR</code></pre>
+<pre><code>## Loading required package: eventdataR</code></pre>
+<pre><code>## Loading required package: processmapR</code></pre>
+<pre><code>## Loading required package: xesreadR</code></pre>
 <pre><code>## 
 ## Attaching package: 'bupaR'</code></pre>
 <pre><code>## The following object is masked from 'package:stats':
@@ -108,20 +112,30 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 
 ## Start eventlog:  2017-01-05 08:59:04
 ## End eventlog:  2018-05-05 01:34:30</code></pre>
-<pre><code>##        handling     patient          employee handling_id       
-##  Blood test:474   Length:996         r3:474   Length:996        
-##  X-Ray     :522   Class :character   r5:522   Class :character  
-##                   Mode  :character            Mode  :character  
-##                                                                 
-##                                                                 
-##                                                                 
-##  registration_type      time                    
-##  complete:498      Min.   :2017-01-05 08:59:04  
-##  start   :498      1st Qu.:2017-05-06 12:31:43  
-##                    Median :2017-09-08 00:10:11  
-##                    Mean   :2017-09-03 07:11:55  
-##                    3rd Qu.:2017-12-23 02:06:20  
-##                    Max.   :2018-05-05 01:34:30</code></pre>
+<pre><code>##                   handling     patient          employee
+##  Blood test           :474   Length:996         r1:  0  
+##  Check-out            :  0   Class :character   r2:  0  
+##  Discuss Results      :  0   Mode  :character   r3:474  
+##  MRI SCAN             :  0                      r4:  0  
+##  Registration         :  0                      r5:522  
+##  Triage and Assessment:  0                      r6:  0  
+##  X-Ray                :522                      r7:  0  
+##  handling_id        registration_type      time                    
+##  Length:996         complete:498      Min.   :2017-01-05 08:59:04  
+##  Class :character   start   :498      1st Qu.:2017-05-06 12:31:43  
+##  Mode  :character                     Median :2017-09-08 00:10:11  
+##                                       Mean   :2017-09-03 07:11:55  
+##                                       3rd Qu.:2017-12-23 02:06:20  
+##                                       Max.   :2018-05-05 01:34:30  
+##                                                                    
+##      .order     
+##  Min.   :  1.0  
+##  1st Qu.:249.8  
+##  Median :498.5  
+##  Mean   :498.5  
+##  3rd Qu.:747.2  
+##  Max.   :996.0  
+## </code></pre>
 <p>As one can see, there are only 2 distinct activities left in the event log.</p>
 </div>
 <div id="filter-on-activity-frequency" class="section level3">
@@ -133,12 +147,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <pre><code>## Warning in deprecated_perc(percentage, ...): Argument percentile_cut_off is
 ## deprecated. Use percentage instead.</code></pre>
 <pre><code>## # A tibble: 4 x 3
-##     handling absolute  relative
-##       &lt;fctr&gt;    &lt;int&gt;     &lt;dbl&gt;
-## 1 Blood test      237 0.1933116
-## 2  Check-out      492 0.4013051
-## 3   MRI SCAN      236 0.1924959
-## 4      X-Ray      261 0.2128874</code></pre>
+##   handling   absolute relative
+##   &lt;fct&gt;         &lt;int&gt;    &lt;dbl&gt;
+## 1 Blood test      237    0.193
+## 2 Check-out       492    0.401
+## 3 MRI SCAN        236    0.192
+## 4 X-Ray           261    0.213</code></pre>
 </div>
 <div id="filter-on-attributes" class="section level3">
 <h3>Filter on attributes</h3>
@@ -152,20 +166,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 2 activities
 ## 761 activity instances
 ## 
-## # A tibble: 1,522 x 6
-##        handling patient employee handling_id registration_type
-##          &lt;fctr&gt;   &lt;chr&gt;   &lt;fctr&gt;       &lt;chr&gt;            &lt;fctr&gt;
-##  1 Registration       1       r1           1             start
-##  2 Registration       2       r1           2             start
-##  3 Registration       3       r1           3             start
-##  4 Registration       4       r1           4             start
-##  5 Registration       5       r1           5             start
-##  6 Registration       6       r1           6             start
-##  7 Registration       7       r1           7             start
-##  8 Registration       8       r1           8             start
-##  9 Registration       9       r1           9             start
-## 10 Registration      10       r1          10             start
-## # ... with 1,512 more rows, and 1 more variables: time &lt;dttm&gt;</code></pre>
+## # A tibble: 1,522 x 7
+##    handling     patient employee handling_id registration_type
+##    &lt;fct&gt;        &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            
+##  1 Registration 1       r1       1           start            
+##  2 Registration 2       r1       2           start            
+##  3 Registration 3       r1       3           start            
+##  4 Registration 4       r1       4           start            
+##  5 Registration 5       r1       5           start            
+##  6 Registration 6       r1       6           start            
+##  7 Registration 7       r1       7           start            
+##  8 Registration 8       r1       8           start            
+##  9 Registration 9       r1       9           start            
+## 10 Registration 10      r1       10          start            
+## # ... with 1,512 more rows, and 2 more variables: time &lt;dttm&gt;,
+## #   .order &lt;int&gt;</code></pre>
 </div>
 <div id="filter-resources" class="section level3">
 <h3>Filter resources</h3>
@@ -174,10 +189,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">    </span><span class="kw">filter_resource</span>(<span class="kw">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</code></pre></div>
 <pre><code>## # A tibble: 2 x 3
-##   employee absolute  relative
-##     &lt;fctr&gt;    &lt;int&gt;     &lt;dbl&gt;
-## 1       r1      500 0.6793478
-## 2       r4      236 0.3206522</code></pre>
+##   employee absolute relative
+##   &lt;fct&gt;       &lt;int&gt;    &lt;dbl&gt;
+## 1 r1            500    0.679
+## 2 r4            236    0.321</code></pre>
 </div>
 <div id="trim-cases" class="section level3">
 <h3>Trim cases</h3>
@@ -185,13 +200,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">patients <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">filter_trim</span>(<span class="dt">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="dt">end_activities =</span>  <span class="kw">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">traces</span>()</code></pre></div>
-<pre><code>## # A tibble: 2 x 4
-##                                                    trace trace_id
-##                                                    &lt;chr&gt;    &lt;dbl&gt;
-## 1 Registration,Triage and Assessment,Blood test,MRI SCAN        1
-## 2               Registration,Triage and Assessment,X-Ray        2
-## # ... with 2 more variables: absolute_frequency &lt;int&gt;,
-## #   relative_frequency &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   trace                                absolute_frequen~ relative_frequen~
+##   &lt;chr&gt;                                            &lt;int&gt;             &lt;dbl&gt;
+## 1 Registration,Triage and Assessment,~               236             0.475
+## 2 Registration,Triage and Assessment,~               261             0.525</code></pre>
 </div>
 </div>
 <div id="case-filters" class="section level2">
