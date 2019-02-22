@@ -6,16 +6,18 @@
 \alias{processing_time.grouped_eventlog}
 \title{Metric: Processing time}
 \usage{
-processing_time(eventlog, level, append, append_column, units, ...)
+processing_time(eventlog, level, append, append_column, units, sort,
+  work_schedule, ...)
 
 \method{processing_time}{eventlog}(eventlog, level = c("log", "trace", "case",
   "activity", "resource", "resource-activity"), append = F,
-  append_column = NULL, units = c("days", "hours", "mins", "secs", "week"),
-  ...)
+  append_column = NULL, units = c("days", "hours", "mins", "secs", "weeks"),
+  sort = TRUE, work_schedule = NULL, ...)
 
 \method{processing_time}{grouped_eventlog}(eventlog, level = c("log", "trace",
   "case", "activity", "resource", "resource-activity"), append = F,
-  append_column = NULL, units = c("hours", "days", "weeks", "mins"), ...)
+  append_column = NULL, units = c("days", "hours", "mins", "secs", "weeks"),
+  sort = TRUE, work_schedule = NULL, ...)
 }
 \arguments{
 \item{eventlog}{The dataset to be used. Should be a (grouped) eventlog object.
@@ -29,6 +31,10 @@ For more information, see \code{vignette("metrics", "edeaR")}}
 \item{append_column}{Which of the output columns to append to log, if append = T. Default column depends on chosen level.}
 
 \item{units}{Time units to be used}
+
+\item{sort}{Sort on decreasing processing time. For case level only.}
+
+\item{work_schedule}{A schedule of working hours. If provided, only working hours are counted as processing time.}
 
 \item{...}{Deprecated arguments}
 }

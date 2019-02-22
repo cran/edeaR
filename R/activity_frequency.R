@@ -19,6 +19,7 @@
 #' @param level Level of granularity for the analysis: log, trace, case, activity. For more information, see \code{vignette("metrics", "edeaR")}
 #' @param append Logical, indicating whether to append results to original event log. Ignored when level is log or trace.
 #' @param append_column Which of the output columns to append to log, if append = T. Default column depends on chosen level.
+#' @param sort Sort output on count. Defaults to TRUE. Only for levels with frequency count output.
 #' @param ... Deprecated arguments
 #'
 #' @references Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
@@ -37,8 +38,9 @@ activity_frequency.eventlog <- function(eventlog,
 										level = c("log","trace","activity","case"),
 										append = F,
 										append_column = NULL,
+										sort = TRUE,
 										...) {
-
+	absolute <- NULL
 	level <- match.arg(level)
 	level <- deprecated_level(level, ...)
 
@@ -56,7 +58,10 @@ activity_frequency.eventlog <- function(eventlog,
 
 
 	output <- FUN(eventlog = eventlog)
-
+	if(sort && level %in% c("case", "trace","activity")) {
+		output %>%
+			arrange(-absolute) -> output
+	}
 	return_metric(eventlog, output, level, append, append_column, "activity_frequency")
 
 }
@@ -69,7 +74,10 @@ activity_frequency.grouped_eventlog <- function(eventlog,
 												level = c("log","trace","activity","case"),
 												append = F,
 												append_column = NULL,
+												sort = TRUE,
 												...) {
+	absolute <- NULL
+
 	level <- match.arg(level)
 	level <- deprecated_level(level, ...)
 
@@ -90,6 +98,10 @@ activity_frequency.grouped_eventlog <- function(eventlog,
 	}
 	else {
 		grouped_metric_raw_log(eventlog, FUN) -> output
+	}
+	if(sort && level %in% c("case", "trace","activity")) {
+		output %>%
+			arrange(-absolute) -> output
 	}
 
 	return_metric(eventlog, output, level, append, append_column, "activity_frequency")

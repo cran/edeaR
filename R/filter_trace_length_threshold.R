@@ -4,6 +4,7 @@ filter_trace_length_threshold <- function(eventlog,
 									  upper_threshold,
 									  reverse)
 {
+	absolute <- NULL
 
 	if(is.na(lower_threshold))
 		lower_threshold <- -Inf
@@ -13,7 +14,7 @@ filter_trace_length_threshold <- function(eventlog,
 
 	eventlog %>%
 		trace_length("case") %>%
-		filter(between(trace_length, lower_threshold, upper_threshold)) %>%
+		filter(between(absolute, lower_threshold, upper_threshold)) %>%
 		pull(1) -> case_selection
 
 	filter_case(eventlog, case_selection, reverse)

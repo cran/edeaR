@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2018-07-01" />
+<meta name="date" content="2019-02-22" />
 
 <title>Filters</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author"><em>Gert Janssenswillen</em></h4>
-<h4 class="date"><em>2018-07-01</em></h4>
+<h4 class="date"><em>2019-02-22</em></h4>
 
 
 
@@ -151,36 +151,44 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <pre><code>## # A tibble: 4 x 3
 ##   handling   absolute relative
 ##   &lt;fct&gt;         &lt;int&gt;    &lt;dbl&gt;
-## 1 Blood test      237    0.193
-## 2 Check-out       492    0.401
-## 3 MRI SCAN        236    0.192
-## 4 X-Ray           261    0.213</code></pre>
+## 1 Check-out       492    0.401
+## 2 X-Ray           261    0.213
+## 3 Blood test      237    0.193
+## 4 MRI SCAN        236    0.192</code></pre>
 </div>
 <div id="filter-on-attributes" class="section level3">
 <h3>Filter on attributes</h3>
 <p>The filter_attributes function is a very generic function an can be supplied with conditions on the data set, in the same way as the <code>dplyr::filter</code> function. As such, it allows you to filter on event or case attributes. Multiple conditions can be listed, separated by a comma. In that case, the comma will be treated as “and”. You can use the |-symbol to state “OR”. Since the patients dataset does not have many additional attributes, the example below uses the resource and activity. This filter is thus the same as the combination of filter_activity and filter_resource, in case both conditions were required. However, it has the advantange of stating both conditions as OR.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">patients <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">filter_attributes</span>(employee <span class="op">==</span><span class="st"> &quot;r1&quot;</span> <span class="op">|</span><span class="st"> </span>handling <span class="op">==</span><span class="st"> &quot;X-Ray&quot;</span>) </code></pre></div>
-<pre><code>## Event log consisting of:
-## 1522 events
-## 2 traces
-## 500 cases
-## 2 activities
-## 761 activity instances
+<pre><code>## Log of 1522 events consisting of:
+## 2 traces 
+## 500 cases 
+## 761 instances of 2 activities 
+## 2 resources 
+## Events occurred from 2017-01-02 11:41:53 until 2018-05-05 01:34:30 
+##  
+## Variables were mapped as follows:
+## Case identifier:     patient 
+## Activity identifier:     handling 
+## Resource identifier:     employee 
+## Activity instance identifier:    handling_id 
+## Timestamp:           time 
+## Lifecycle transition:        registration_type 
 ## 
 ## # A tibble: 1,522 x 7
-##    handling     patient employee handling_id registration_type
-##    &lt;fct&gt;        &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            
-##  1 Registration 1       r1       1           start            
-##  2 Registration 2       r1       2           start            
-##  3 Registration 3       r1       3           start            
-##  4 Registration 4       r1       4           start            
-##  5 Registration 5       r1       5           start            
-##  6 Registration 6       r1       6           start            
-##  7 Registration 7       r1       7           start            
-##  8 Registration 8       r1       8           start            
-##  9 Registration 9       r1       9           start            
-## 10 Registration 10      r1       10          start            
+##    handling patient employee handling_id registration_ty~
+##    &lt;fct&gt;    &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;           
+##  1 Registr~ 1       r1       1           start           
+##  2 Registr~ 2       r1       2           start           
+##  3 Registr~ 3       r1       3           start           
+##  4 Registr~ 4       r1       4           start           
+##  5 Registr~ 5       r1       5           start           
+##  6 Registr~ 6       r1       6           start           
+##  7 Registr~ 7       r1       7           start           
+##  8 Registr~ 8       r1       8           start           
+##  9 Registr~ 9       r1       9           start           
+## 10 Registr~ 10      r1       10          start           
 ## # ... with 1,512 more rows, and 2 more variables: time &lt;dttm&gt;,
 ## #   .order &lt;int&gt;</code></pre>
 </div>
@@ -203,10 +211,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">    </span><span class="kw">filter_trim</span>(<span class="dt">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="dt">end_activities =</span>  <span class="kw">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">traces</span>()</code></pre></div>
 <pre><code>## # A tibble: 2 x 3
-##   trace                                absolute_frequen~ relative_frequen~
-##   &lt;chr&gt;                                            &lt;int&gt;             &lt;dbl&gt;
-## 1 Registration,Triage and Assessment,~               236             0.475
-## 2 Registration,Triage and Assessment,~               261             0.525</code></pre>
+##   trace                                 absolute_frequen~ relative_frequen~
+##   &lt;chr&gt;                                             &lt;int&gt;             &lt;dbl&gt;
+## 1 Registration,Triage and Assessment,B~               236             0.475
+## 2 Registration,Triage and Assessment,X~               261             0.525</code></pre>
 </div>
 </div>
 <div id="case-filters" class="section level2">

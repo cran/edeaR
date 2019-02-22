@@ -78,7 +78,9 @@ number_of_selfloops.eventlog <- function(eventlog,
 								level = c("log","case","activity","resource","resource-activity"),
 								append = FALSE,
 								append_column = NULL,
+								sort = TRUE,
 								...) {
+	absolute <- NULL
 	if(all((type) == c("all", "repeat","redo")))
 		message("Using default type: all")
 	if(all((level) == c("log","case","activity","resource","resource-activity")))
@@ -126,6 +128,10 @@ number_of_selfloops.eventlog <- function(eventlog,
 	}
 
 	output <- FUN(eventlog = eventlog)
+	if(sort && level %in% c("case","resource", "activity","resource-activity")) {
+		output %>%
+			arrange(-absolute) -> output
+	}
 
 	output <- return_metric(eventlog, output, level, append, append_column, "number_of_selfloops")
 
@@ -143,8 +149,9 @@ number_of_selfloops.grouped_eventlog <- function(eventlog,
 								level = c("log","case","activity","resource","resource-activity"),
 								append = FALSE,
 								append_column = NULL,
+								sort = TRUE,
 								...) {
-
+	absolute <- NULL
 	if(is.null(append_column)) {
 		append_column <- case_when(level == "case" ~ "absolute",
 								   level == "resource" ~ "absolute",
@@ -193,6 +200,11 @@ number_of_selfloops.grouped_eventlog <- function(eventlog,
 		else {
 			output <- grouped_metric_raw_log(eventlog, FUN)
 		}
+
+	if(sort && level %in% c("case","resource", "activity","resource-activity")) {
+		output %>%
+			arrange(-absolute) -> output
+	}
 
 	output <- return_metric(eventlog, output, level, append, append_column, "number_of_selfloops", ifelse(level == "resource-activity", 3,2))
 
