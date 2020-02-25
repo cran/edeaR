@@ -13,7 +13,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2019-08-19" />
+<meta name="date" content="2020-02-25" />
 
 <title>Filters</title>
 
@@ -304,21 +304,22 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author">Gert Janssenswillen</h4>
-<h4 class="date">2019-08-19</h4>
+<h4 class="date">2020-02-25</h4>
 
 
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(bupaR)</a></code></pre></div>
+<pre><code>## Warning: package &#39;bupaR&#39; was built under R version 3.6.2</code></pre>
 <pre><code>## Loading required package: edeaR</code></pre>
 <pre><code>## Loading required package: eventdataR</code></pre>
+<pre><code>## Warning: package &#39;eventdataR&#39; was built under R version 3.6.2</code></pre>
 <pre><code>## Loading required package: processmapR</code></pre>
 <pre><code>## Loading required package: xesreadR</code></pre>
-<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
-## logical.return = TRUE, : there is no package called &#39;xesreadR&#39;</code></pre>
+<pre><code>## Warning: package &#39;xesreadR&#39; was built under R version 3.6.2</code></pre>
 <pre><code>## Loading required package: processmonitR</code></pre>
-<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
-## logical.return = TRUE, : there is no package called &#39;processmonitR&#39;</code></pre>
+<pre><code>## Warning: package &#39;processmonitR&#39; was built under R version 3.6.2</code></pre>
 <pre><code>## Loading required package: petrinetR</code></pre>
+<pre><code>## Warning: package &#39;petrinetR&#39; was built under R version 3.6.2</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;bupaR&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:stats&#39;:
@@ -327,8 +328,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <pre><code>## The following object is masked from &#39;package:utils&#39;:
 ## 
 ##     timestamp</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">library</span>(edeaR)</a>
-<a class="sourceLine" id="cb13-2" title="2"><span class="kw">library</span>(eventdataR)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">library</span>(edeaR)</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="kw">library</span>(eventdataR)</a></code></pre></div>
 <p>The filters for event data subsetting can mostly be divided into two type: event filters and case filters. Event filters will subset <em>parts</em> of cases based on criteria applied on the events (e.g. the resource which performed it), while case filters will subset complete cases, based on criteria applied on the cases (e.g. the trace length).</p>
 <p>Each filter has a <em>reverse</em> argument, which allows to reverse the filter very easily. Furthermore, each filter has an interface-alternative, which can be called by adding a <em>i</em> before the function name.</p>
 <div id="event-filters" class="section level2">
@@ -341,9 +342,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>a vector of activities</li>
 <li>the reverse argument (FALSE or TRUE)</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-3" title="3"><span class="st">    </span>summary</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">patients <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="st">    </span>summary</a></code></pre></div>
 <pre><code>## Number of events:  996
 ## Number of cases:  498
 ## Number of traces:  2
@@ -352,38 +353,30 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 
 ## Start eventlog:  2017-01-05 08:59:04
 ## End eventlog:  2018-05-05 01:34:30</code></pre>
-<pre><code>##                   handling     patient          employee
-##  Blood test           :474   Length:996         r1:  0  
-##  Check-out            :  0   Class :character   r2:  0  
-##  Discuss Results      :  0   Mode  :character   r3:474  
-##  MRI SCAN             :  0                      r4:  0  
-##  Registration         :  0                      r5:522  
-##  Triage and Assessment:  0                      r6:  0  
-##  X-Ray                :522                      r7:  0  
-##  handling_id        registration_type      time                    
-##  Length:996         complete:498      Min.   :2017-01-05 08:59:04  
-##  Class :character   start   :498      1st Qu.:2017-05-06 12:31:43  
-##  Mode  :character                     Median :2017-09-08 00:10:11  
-##                                       Mean   :2017-09-03 07:11:55  
-##                                       3rd Qu.:2017-12-23 02:06:20  
-##                                       Max.   :2018-05-05 01:34:30  
-##                                                                    
-##      .order     
-##  Min.   :  1.0  
-##  1st Qu.:249.8  
-##  Median :498.5  
-##  Mean   :498.5  
-##  3rd Qu.:747.2  
-##  Max.   :996.0  
+<pre><code>##                   handling     patient          employee handling_id       
+##  Blood test           :474   Length:996         r1:  0   Length:996        
+##  Check-out            :  0   Class :character   r2:  0   Class :character  
+##  Discuss Results      :  0   Mode  :character   r3:474   Mode  :character  
+##  MRI SCAN             :  0                      r4:  0                     
+##  Registration         :  0                      r5:522                     
+##  Triage and Assessment:  0                      r6:  0                     
+##  X-Ray                :522                      r7:  0                     
+##  registration_type      time                         .order     
+##  complete:498      Min.   :2017-01-05 08:59:04   Min.   :  1.0  
+##  start   :498      1st Qu.:2017-05-06 12:31:43   1st Qu.:249.8  
+##                    Median :2017-09-08 00:10:11   Median :498.5  
+##                    Mean   :2017-09-03 07:11:55   Mean   :498.5  
+##                    3rd Qu.:2017-12-23 02:06:20   3rd Qu.:747.2  
+##                    Max.   :2018-05-05 01:34:30   Max.   :996.0  
 ## </code></pre>
 <p>As one can see, there are only 2 distinct activities left in the event log.</p>
 </div>
 <div id="filter-on-activity-frequency" class="section level3">
 <h3>Filter on activity frequency</h3>
 <p>It is also possible to filter on activity frequency. This filter uses a percentile cut off, and will look at those activities which are most frequent until the required percentage of events has been reached. Thus, a percentile cut off of 80% will look at the activities needed to represent 80% of the events. In the example below, the <strong>least</strong> frequent activities covering 50% of the event log are selected, since the reverse argument is true.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb17-2" title="2"><span class="st">    </span><span class="kw">filter_activity_frequency</span>(<span class="dt">percentile_cut_off =</span> <span class="fl">0.5</span>, <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb17-3" title="3"><span class="st">    </span><span class="kw">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">patients <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="st">    </span><span class="kw">filter_activity_frequency</span>(<span class="dt">percentile_cut_off =</span> <span class="fl">0.5</span>, <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="st">    </span><span class="kw">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</a></code></pre></div>
 <pre><code>## Warning in deprecated_perc(percentage, ...): Argument percentile_cut_off is
 ## deprecated. Use percentage instead.</code></pre>
 <pre><code>## # A tibble: 4 x 3
@@ -397,8 +390,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div id="filter-on-attributes" class="section level3">
 <h3>Filter on attributes</h3>
 <p>The filter_attributes function is a very generic function an can be supplied with conditions on the data set, in the same way as the <code>dplyr::filter</code> function. As such, it allows you to filter on event or case attributes. Multiple conditions can be listed, separated by a comma. In that case, the comma will be treated as “and”. You can use the |-symbol to state “OR”. Since the patients dataset does not have many additional attributes, the example below uses the resource and activity. This filter is thus the same as the combination of filter_activity and filter_resource, in case both conditions were required. However, it has the advantange of stating both conditions as OR.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">patients <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb20-2" title="2"><span class="st">    </span><span class="kw">filter_attributes</span>(employee <span class="op">==</span><span class="st"> &quot;r1&quot;</span> <span class="op">|</span><span class="st"> </span>handling <span class="op">==</span><span class="st"> &quot;X-Ray&quot;</span>) </a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">patients <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="st">    </span><span class="kw">filter_attributes</span>(employee <span class="op">==</span><span class="st"> &quot;r1&quot;</span> <span class="op">|</span><span class="st"> </span>handling <span class="op">==</span><span class="st"> &quot;X-Ray&quot;</span>) </a></code></pre></div>
 <pre><code>## Log of 1522 events consisting of:
 ## 2 traces 
 ## 500 cases 
@@ -415,27 +408,26 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Lifecycle transition:        registration_type 
 ## 
 ## # A tibble: 1,522 x 7
-##    handling patient employee handling_id registration_ty~
-##    &lt;fct&gt;    &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;           
-##  1 Registr~ 1       r1       1           start           
-##  2 Registr~ 2       r1       2           start           
-##  3 Registr~ 3       r1       3           start           
-##  4 Registr~ 4       r1       4           start           
-##  5 Registr~ 5       r1       5           start           
-##  6 Registr~ 6       r1       6           start           
-##  7 Registr~ 7       r1       7           start           
-##  8 Registr~ 8       r1       8           start           
-##  9 Registr~ 9       r1       9           start           
-## 10 Registr~ 10      r1       10          start           
-## # ... with 1,512 more rows, and 2 more variables: time &lt;dttm&gt;,
-## #   .order &lt;int&gt;</code></pre>
+##    handling patient employee handling_id registration_ty~ time               
+##    &lt;fct&gt;    &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            &lt;dttm&gt;             
+##  1 Registr~ 1       r1       1           start            2017-01-02 11:41:53
+##  2 Registr~ 2       r1       2           start            2017-01-02 11:41:53
+##  3 Registr~ 3       r1       3           start            2017-01-04 01:34:05
+##  4 Registr~ 4       r1       4           start            2017-01-04 01:34:04
+##  5 Registr~ 5       r1       5           start            2017-01-04 16:07:47
+##  6 Registr~ 6       r1       6           start            2017-01-04 16:07:47
+##  7 Registr~ 7       r1       7           start            2017-01-05 04:56:11
+##  8 Registr~ 8       r1       8           start            2017-01-05 04:56:11
+##  9 Registr~ 9       r1       9           start            2017-01-06 05:58:54
+## 10 Registr~ 10      r1       10          start            2017-01-06 05:58:54
+## # ... with 1,512 more rows, and 1 more variable: .order &lt;int&gt;</code></pre>
 </div>
 <div id="filter-resources" class="section level3">
 <h3>Filter resources</h3>
 <p>Similar to the activity filter, the resource filter can be used to filter events by listing on or more resources.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb22-2" title="2"><span class="st">    </span><span class="kw">filter_resource</span>(<span class="kw">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb22-3" title="3"><span class="st">    </span><span class="kw">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">patients <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="st">    </span><span class="kw">filter_resource</span>(<span class="kw">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="st">    </span><span class="kw">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 3
 ##   employee absolute relative
 ##   &lt;fct&gt;       &lt;int&gt;    &lt;dbl&gt;
@@ -445,14 +437,14 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div id="trim-cases" class="section level3">
 <h3>Trim cases</h3>
 <p>The trim filter is a special event filter, as it also take into account the notion of cases. In fact, it <em>trim</em> cases such that they start with a certain activities until they end with a certain activity. It requires two list: one for possible start activities and one for end activities. The cases will be trimmed from the first appearance of a start activity till the last appearance of an end activity. When reversed, these <em>slices</em> of the event log will be removed instead of preserved.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="st">    </span><span class="kw">filter_trim</span>(<span class="dt">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="dt">end_activities =</span>  <span class="kw">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb24-3" title="3"><span class="st">    </span><span class="kw">traces</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">patients <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="st">    </span><span class="kw">filter_trim</span>(<span class="dt">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="dt">end_activities =</span>  <span class="kw">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-3" title="3"><span class="st">    </span><span class="kw">traces</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 3
-##   trace                                 absolute_frequen~ relative_frequen~
-##   &lt;chr&gt;                                             &lt;int&gt;             &lt;dbl&gt;
-## 1 Registration,Triage and Assessment,B~               236             0.475
-## 2 Registration,Triage and Assessment,X~               261             0.525</code></pre>
+##   trace                                      absolute_frequen~ relative_frequen~
+##   &lt;chr&gt;                                                  &lt;int&gt;             &lt;dbl&gt;
+## 1 Registration,Triage and Assessment,X-Ray                 261             0.525
+## 2 Registration,Triage and Assessment,Blood ~               236             0.475</code></pre>
 </div>
 </div>
 <div id="case-filters" class="section level2">
