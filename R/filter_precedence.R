@@ -51,6 +51,22 @@ filter_precedence.eventlog <- function(eventlog,
 	filter_method <- match.arg(filter_method)
 
 	conditions_valid <- NULL
+	acts <- activity_labels(eventlog)
+
+	wrong <-  antecedents[!(antecedents %in% acts)]
+	if(length(wrong) > 0) {
+		warning(glue("{length(wrong)} specified antecedents not found in event log, and removed: {str_flatten(wrong, collapse = ', ')}"))
+		antecedents <- antecedents[(antecedents %in% acts)]
+	}
+	wrong <-  consequents[!(consequents %in% acts)]
+	if(length(wrong) > 0) {
+		warning(glue("{length(wrong)} specified consequents not found in event log, and removed: {str_flatten(wrong, collapse = ', ')}"))
+		consequents <- consequents[(consequents %in% acts)]
+	}
+
+	if(length(antecedents) < 1 || length(consequents) < 1) {
+		stop("No valid antecendent-consequent pairs.")
+	}
 
 	sequence_pairs <- tibble(pair = paste(rep(antecedents, each = length(consequents)),
 						   			rep(consequents, times = length(antecedents)), sep = ","))
@@ -58,18 +74,23 @@ filter_precedence.eventlog <- function(eventlog,
 	number_of_conditions <- nrow(sequence_pairs)
 
 
-	if(precedence_type == "directly_follows") {
-		sequence_pairs %>%
-			rowwise %>%
-			mutate(pattern = str_flatten(c(",", pair,","))) -> sequence_pairs
-	} else if(precedence_type == "eventually_follows") {
-		sequence_pairs %>%
-			rowwise() %>%
-			mutate(pattern = str_flatten(c(",",map_chr(str_split(pair, ","), str_flatten, collapse = "(,.*)*,"),",")))  -> sequence_pairs
-	}
+	sequence_pairs %>%
+		rowwise %>%
+		mutate(pattern = str_flatten(c(",", pair,","))) -> sequence_pairs
+
 
 	eventlog %>%
 		case_list() -> cases
+
+	if(precedence_type == "directly_follows") {
+		eventlog %>%
+			case_list() -> cases
+
+	} else if(precedence_type == "eventually_follows") {
+		eventlog %>%
+			filter_activity(activities = c(antecedents, consequents)) %>%
+			case_list() -> cases
+	}
 
 	cases %>%
 		distinct(trace) %>%

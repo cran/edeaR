@@ -12,6 +12,7 @@ patients %>%
 patients %>%
 	filter_activity_frequency(percentile_cut_off = 0.5, reverse = T) %>%
 	activity_frequency("activity")
+
 	
 
 ## -----------------------------------------------------------------------------
