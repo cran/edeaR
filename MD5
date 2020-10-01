@@ -1,6 +1,6 @@
-6b24cd2775b21c0c1c7981fc706a5bd4 *DESCRIPTION
+1f6d64645a2f335ea356a086e2cd09a2 *DESCRIPTION
 dc9f9fa4952f8a431e865b1ffb425169 *LICENSE
-8b66aaf9222eadf678cf89ce99a567f4 *NAMESPACE
+46c3bef6a5f214bf496641a35d5fd0c8 *NAMESPACE
 0ce743ea5ad49599abed135dff3de46c *NEWS
 c27ac51ac5a97fc4339188d66786c3b2 *R/activity_frequency.R
 8828d10f7ba25e620cd92384a0745d60 *R/activity_frequency_activity.R
@@ -27,6 +27,7 @@ ae67be65425bf8f9d6ad07024f377cfb *R/filter_case_condition.R
 487c48c35baeb8dea86aee2bde8b94cf *R/filter_endpoints_conditions.R
 4760ad74caea808b6cfc675636be173a *R/filter_endpoints_percentile.R
 6378de3b83f4b8c4a43d6c51ad741d08 *R/filter_endpoints_sets.R
+8e39abb8db9d3059a02686678fa6c555 *R/filter_infrequent_flows.R
 e9c57af986e637367c7acbdc87feee0b *R/filter_lifecycle.R
 96ceb6216386ece52a21b5ca490de0d8 *R/filter_lifecycle_presence.R
 5fa48729f01b43bfc90b5a4628035870 *R/filter_lifecycle_trim.R
@@ -67,7 +68,7 @@ eee2710a4644dd04f9a0582a14b5059d *R/plot.number_of_repetitions.R
 7ccf8f5756a280c93236961f673e0bb6 *R/plot.number_of_selfloops.R
 2cd8d05784749167b7fb2866eb151377 *R/plot.processing_time.R
 5c5f2dae7909ce9eab8d5356ada337d6 *R/plot.r
-57025bcb49da87a21e551cc0256ea37d *R/plot.referral_matrix.R
+b1a597e8de376b3e904d9b29183f1757 *R/plot.referral_matrix.R
 8bcc67a9fee99def12566ee0e513d2d7 *R/plot.resource_frequency.R
 75cdb23116261647e2e5a829a28d0b1d *R/plot.resource_involvement.R
 37de30c3ff5c9868e658f30494f24ac9 *R/plot.resource_specialisation.R
@@ -143,10 +144,10 @@ f15bf0cfff4fcf6a2b61a47b0ca72e2f *R/trace_coverage_log.R
 e9a47c881f60c62cfa194e59ff056827 *build/vignette.rds
 4a30a921da3e7ccf3760ab07def62ce3 *inst/doc/filters.R
 8626a86be5184366005144e73df121c1 *inst/doc/filters.Rmd
-050764033bb12827615c1aca9b840679 *inst/doc/filters.html
+d65f37dcdfd0b7f9a44e61ff3be8b73b *inst/doc/filters.html
 9db846685662489f2833c2ed02fa0199 *inst/doc/metrics.R
 d63e2290974a81519a8a8464ef9a75b7 *inst/doc/metrics.Rmd
-8186e70037235061d30a6cc5c5bb7411 *inst/doc/metrics.html
+62006ca56dc7b48500dc4a6ad2980698 *inst/doc/metrics.html
 4336f35d54f2a1805a6826ec3cab5b6a *man/activity_frequency.Rd
 18ee2d6e128029eade972cf4cc2397e8 *man/activity_presence.Rd
 e95f67572b4e99b8654adedd57bd7690 *man/change_day.Rd
@@ -161,6 +162,7 @@ bf45be03909bdc79215ea1da65227124 *man/filter_case.Rd
 840548e6758cb2211f03a5dc620309ac *man/filter_case_condition.Rd
 c890624e32eadb7438a95078b7ce1f15 *man/filter_endpoints.Rd
 5a9792bb7d92b25e3b7b376abbb60579 *man/filter_endpoints_conditions.Rd
+e60ee7d11a5d6ecff0a6983000733afe *man/filter_infrequent_flows.Rd
 85a6df71656910b028c309d8e448d88d *man/filter_lifecycle.Rd
 927704a656b823832ee15d919d95ec70 *man/filter_lifecycle_presence.Rd
 f038239e57c4d5f28d0a1d2bc49bca80 *man/filter_precedence.Rd
