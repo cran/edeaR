@@ -4,12 +4,12 @@ author: "Gert Janssenswillen"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Metric}
+  %\VignetteIndexEntry{Metrics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r}
+```{r message = F}
 library(bupaR)
 library(edeaR)
 library(eventdataR)

@@ -1,4 +1,4 @@
-## -----------------------------------------------------------------------------
+## ----message = F--------------------------------------------------------------
 library(bupaR)
 library(edeaR)
 library(eventdataR)
@@ -10,7 +10,7 @@ patients %>%
 
 ## -----------------------------------------------------------------------------
 patients %>%
-	filter_activity_frequency(percentile_cut_off = 0.5, reverse = T) %>%
+	filter_activity_frequency(percentage = 0.5, reverse = T) %>%
 	activity_frequency("activity")
 
 	

@@ -12,34 +12,66 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2020-10-01" />
+<meta name="date" content="2022-07-10" />
 
 <title>Filters</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -48,9 +80,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -104,6 +136,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -301,36 +334,37 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author">Gert Janssenswillen</h4>
-<h4 class="date">2020-10-01</h4>
+<h4 class="date">2022-07-10</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(bupaR)</a></code></pre></div>
-<pre><code>## 
-## Attaching package: &#39;bupaR&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter</code></pre>
-<pre><code>## The following object is masked from &#39;package:utils&#39;:
-## 
-##     timestamp</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">library</span>(edeaR)</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="kw">library</span>(eventdataR)</a></code></pre></div>
-<p>The filters for event data subsetting can mostly be divided into two type: event filters and case filters. Event filters will subset <em>parts</em> of cases based on criteria applied on the events (e.g. the resource which performed it), while case filters will subset complete cases, based on criteria applied on the cases (e.g. the trace length).</p>
-<p>Each filter has a <em>reverse</em> argument, which allows to reverse the filter very easily. Furthermore, each filter has an interface-alternative, which can be called by adding a <em>i</em> before the function name.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bupaR)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edeaR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eventdataR)</span></code></pre></div>
+<p>The filters for event data subsetting can mostly be divided into two
+type: event filters and case filters. Event filters will subset
+<em>parts</em> of cases based on criteria applied on the events
+(e.g. the resource which performed it), while case filters will subset
+complete cases, based on criteria applied on the cases (e.g. the trace
+length).</p>
+<p>Each filter has a <em>reverse</em> argument, which allows to reverse
+the filter very easily. Furthermore, each filter has an
+interface-alternative, which can be called by adding a <em>i</em> before
+the function name.</p>
 <div id="event-filters" class="section level2">
 <h2>Event filters</h2>
 <div id="filter-activities" class="section level3">
 <h3>Filter activities</h3>
-<p>The filter activity function can be used to filter activities by name. It has three arguments</p>
+<p>The filter activity function can be used to filter activities by
+name. It has three arguments</p>
 <ul>
 <li>the event log</li>
 <li>a vector of activities</li>
 <li>the reverse argument (FALSE or TRUE)</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="st">    </span>summary</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity</span>(<span class="fu">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    summary</span></code></pre></div>
 <pre><code>## Number of events:  996
 ## Number of cases:  498
 ## Number of traces:  2
@@ -355,16 +389,21 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##                    3rd Qu.:2017-12-23 02:06:20   3rd Qu.:747.2  
 ##                    Max.   :2018-05-05 01:34:30   Max.   :996.0  
 ## </code></pre>
-<p>As one can see, there are only 2 distinct activities left in the event log.</p>
+<p>As one can see, there are only 2 distinct activities left in the
+event log.</p>
 </div>
 <div id="filter-on-activity-frequency" class="section level3">
 <h3>Filter on activity frequency</h3>
-<p>It is also possible to filter on activity frequency. This filter uses a percentile cut off, and will look at those activities which are most frequent until the required percentage of events has been reached. Thus, a percentile cut off of 80% will look at the activities needed to represent 80% of the events. In the example below, the <strong>least</strong> frequent activities covering 50% of the event log are selected, since the reverse argument is true.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="st">    </span><span class="kw">filter_activity_frequency</span>(<span class="dt">percentile_cut_off =</span> <span class="fl">0.5</span>, <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="st">    </span><span class="kw">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</a></code></pre></div>
-<pre><code>## Warning in deprecated_perc(percentage, ...): Argument percentile_cut_off is
-## deprecated. Use percentage instead.</code></pre>
+<p>It is also possible to filter on activity frequency. This filter uses
+a percentile cut off, and will look at those activities which are most
+frequent until the required percentage of events has been reached. Thus,
+a percentile cut off of 80% will look at the activities needed to
+represent 80% of the events. In the example below, the
+<strong>least</strong> frequent activities covering 50% of the event log
+are selected, since the reverse argument is true.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity_frequency</span>(<span class="at">percentage =</span> <span class="fl">0.5</span>, <span class="at">reverse =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 4 x 3
 ##   handling   absolute relative
 ##   &lt;fct&gt;         &lt;int&gt;    &lt;dbl&gt;
@@ -375,17 +414,31 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="filter-on-attributes" class="section level3">
 <h3>Filter on attributes</h3>
-<p>The filter_attributes function is a very generic function an can be supplied with conditions on the data set, in the same way as the <code>dplyr::filter</code> function. As such, it allows you to filter on event or case attributes. Multiple conditions can be listed, separated by a comma. In that case, the comma will be treated as “and”. You can use the |-symbol to state “OR”. Since the patients dataset does not have many additional attributes, the example below uses the resource and activity. This filter is thus the same as the combination of filter_activity and filter_resource, in case both conditions were required. However, it has the advantange of stating both conditions as OR.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">patients <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="st">    </span><span class="kw">filter_attributes</span>(employee <span class="op">==</span><span class="st"> &quot;r1&quot;</span> <span class="op">|</span><span class="st"> </span>handling <span class="op">==</span><span class="st"> &quot;X-Ray&quot;</span>) </a></code></pre></div>
-<pre><code>## Log of 1522 events consisting of:
+<p>The filter_attributes function is a very generic function an can be
+supplied with conditions on the data set, in the same way as the
+<code>dplyr::filter</code> function. As such, it allows you to filter on
+event or case attributes. Multiple conditions can be listed, separated
+by a comma. In that case, the comma will be treated as “and”. You can
+use the |-symbol to state “OR”. Since the patients dataset does not have
+many additional attributes, the example below uses the resource and
+activity. This filter is thus the same as the combination of
+filter_activity and filter_resource, in case both conditions were
+required. However, it has the advantange of stating both conditions as
+OR.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_attributes</span>(employee <span class="sc">==</span> <span class="st">&quot;r1&quot;</span> <span class="sc">|</span> handling <span class="sc">==</span> <span class="st">&quot;X-Ray&quot;</span>) </span></code></pre></div>
+<pre><code>## Warning: `filter_attributes()` was deprecated in bupaR 0.5.0.
+## Please use `filter()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## # Log of 1522 events consisting of:
 ## 2 traces 
 ## 500 cases 
 ## 761 instances of 2 activities 
 ## 2 resources 
 ## Events occurred from 2017-01-02 11:41:53 until 2018-05-05 01:34:30 
 ##  
-## Variables were mapped as follows:
+## # Variables were mapped as follows:
 ## Case identifier:     patient 
 ## Activity identifier:     handling 
 ## Resource identifier:     employee 
@@ -394,91 +447,154 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## Lifecycle transition:        registration_type 
 ## 
 ## # A tibble: 1,522 x 7
-##    handling patient employee handling_id registration_ty~ time               
-##    &lt;fct&gt;    &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            &lt;dttm&gt;             
-##  1 Registr~ 1       r1       1           start            2017-01-02 11:41:53
-##  2 Registr~ 2       r1       2           start            2017-01-02 11:41:53
-##  3 Registr~ 3       r1       3           start            2017-01-04 01:34:05
-##  4 Registr~ 4       r1       4           start            2017-01-04 01:34:04
-##  5 Registr~ 5       r1       5           start            2017-01-04 16:07:47
-##  6 Registr~ 6       r1       6           start            2017-01-04 16:07:47
-##  7 Registr~ 7       r1       7           start            2017-01-05 04:56:11
-##  8 Registr~ 8       r1       8           start            2017-01-05 04:56:11
-##  9 Registr~ 9       r1       9           start            2017-01-06 05:58:54
-## 10 Registr~ 10      r1       10          start            2017-01-06 05:58:54
+##    handling    patient employee handling_id registration_ty~ time               
+##    &lt;fct&gt;       &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            &lt;dttm&gt;             
+##  1 Registrati~ 1       r1       1           start            2017-01-02 11:41:53
+##  2 Registrati~ 2       r1       2           start            2017-01-02 11:41:53
+##  3 Registrati~ 3       r1       3           start            2017-01-04 01:34:05
+##  4 Registrati~ 4       r1       4           start            2017-01-04 01:34:04
+##  5 Registrati~ 5       r1       5           start            2017-01-04 16:07:47
+##  6 Registrati~ 6       r1       6           start            2017-01-04 16:07:47
+##  7 Registrati~ 7       r1       7           start            2017-01-05 04:56:11
+##  8 Registrati~ 8       r1       8           start            2017-01-05 04:56:11
+##  9 Registrati~ 9       r1       9           start            2017-01-06 05:58:54
+## 10 Registrati~ 10      r1       10          start            2017-01-06 05:58:54
 ## # ... with 1,512 more rows, and 1 more variable: .order &lt;int&gt;</code></pre>
 </div>
 <div id="filter-resources" class="section level3">
 <h3>Filter resources</h3>
-<p>Similar to the activity filter, the resource filter can be used to filter events by listing on or more resources.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="st">    </span><span class="kw">filter_resource</span>(<span class="kw">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-3" title="3"><span class="st">    </span><span class="kw">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</a></code></pre></div>
-<pre><code>## # A tibble: 2 x 3
-##   employee absolute relative
-##   &lt;fct&gt;       &lt;int&gt;    &lt;dbl&gt;
-## 1 r1            500    0.679
-## 2 r4            236    0.321</code></pre>
+<p>Similar to the activity filter, the resource filter can be used to
+filter events by listing on or more resources.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_resource</span>(<span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 736 x 4
+##    employee handling_id absolute relative
+##    &lt;fct&gt;    &lt;chr&gt;          &lt;int&gt;    &lt;dbl&gt;
+##  1 r1       1                  2  0.00136
+##  2 r1       10                 2  0.00136
+##  3 r1       100                2  0.00136
+##  4 r1       101                2  0.00136
+##  5 r1       102                2  0.00136
+##  6 r1       103                2  0.00136
+##  7 r1       104                2  0.00136
+##  8 r1       105                2  0.00136
+##  9 r1       106                2  0.00136
+## 10 r1       107                2  0.00136
+## # ... with 726 more rows</code></pre>
 </div>
 <div id="trim-cases" class="section level3">
 <h3>Trim cases</h3>
-<p>The trim filter is a special event filter, as it also take into account the notion of cases. In fact, it <em>trim</em> cases such that they start with a certain activities until they end with a certain activity. It requires two list: one for possible start activities and one for end activities. The cases will be trimmed from the first appearance of a start activity till the last appearance of an end activity. When reversed, these <em>slices</em> of the event log will be removed instead of preserved.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">patients <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb16-2" title="2"><span class="st">    </span><span class="kw">filter_trim</span>(<span class="dt">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="dt">end_activities =</span>  <span class="kw">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb16-3" title="3"><span class="st">    </span><span class="kw">traces</span>()</a></code></pre></div>
-<pre><code>## Warning: `tbl_df()` is deprecated as of dplyr 1.0.0.
-## Please use `tibble::as_tibble()` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<p>The trim filter is a special event filter, as it also take into
+account the notion of cases. In fact, it <em>trim</em> cases such that
+they start with a certain activities until they end with a certain
+activity. It requires two list: one for possible start activities and
+one for end activities. The cases will be trimmed from the first
+appearance of a start activity till the last appearance of an end
+activity. When reversed, these <em>slices</em> of the event log will be
+removed instead of preserved.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_trim</span>(<span class="at">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="at">end_activities =</span>  <span class="fu">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">traces</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 3
-##   trace                                      absolute_frequen~ relative_frequen~
-##   &lt;chr&gt;                                                  &lt;int&gt;             &lt;dbl&gt;
-## 1 Registration,Triage and Assessment,X-Ray                 261             0.525
-## 2 Registration,Triage and Assessment,Blood ~               236             0.475</code></pre>
+##   trace                                        absolute_freque~ relative_freque~
+##   &lt;chr&gt;                                                   &lt;int&gt;            &lt;dbl&gt;
+## 1 Registration,Triage and Assessment,X-Ray                  261            0.525
+## 2 Registration,Triage and Assessment,Blood te~              236            0.475</code></pre>
 </div>
 </div>
 <div id="case-filters" class="section level2">
 <h2>Case filters</h2>
 <div id="filter-activity-presence" class="section level4">
 <h4>Filter activity presence</h4>
-<p>This functions allows to filter cases that contain certain activities. It requires as input a vector containing one or more activity labels and it has a <code>method</code> argument. The latter can have the values <em>all</em>, <em>none</em> or <em>one_of</em>. When set to <em>all</em>, it means that all the specified activity labels must be present for a case to be selected, <em>none</em> means that they are not allowed to be present, and <em>one_of</em> means that at least one of them must be present.</p>
+<p>This functions allows to filter cases that contain certain
+activities. It requires as input a vector containing one or more
+activity labels and it has a <code>method</code> argument. The latter
+can have the values <em>all</em>, <em>none</em> or <em>one_of</em>. When
+set to <em>all</em>, it means that all the specified activity labels
+must be present for a case to be selected, <em>none</em> means that they
+are not allowed to be present, and <em>one_of</em> means that at least
+one of them must be present.</p>
 </div>
 <div id="filter-case" class="section level4">
 <h4>Filter case</h4>
-<p>The case filter allows to subset a set of case identifiers. As arguments it only requires a vector of case id’s. The selection can also be negated using <code>reverse = T</code>.</p>
+<p>The case filter allows to subset a set of case identifiers. As
+arguments it only requires a vector of case id’s. The selection can also
+be negated using <code>reverse = T</code>.</p>
 </div>
 <div id="filter-end-points" class="section level4">
 <h4>Filter end points</h4>
-<p>The <code>filter_endpoints</code> method filters cases based on the first and last activity label. It can be used in two ways: by specifying vectors with allowed start activities and/or allowed end activities, or by specifying a percentile. In the latter case, the percentile value will be used as a cut off. For example, when set to 0.9, it will select the most common endpoint pairs which together cover at least 90% of the cases, and filter the event log accordingly. This filter can also be reversed.</p>
+<p>The <code>filter_endpoints</code> method filters cases based on the
+first and last activity label. It can be used in two ways: by specifying
+vectors with allowed start activities and/or allowed end activities, or
+by specifying a percentile. In the latter case, the percentile value
+will be used as a cut off. For example, when set to 0.9, it will select
+the most common endpoint pairs which together cover at least 90% of the
+cases, and filter the event log accordingly. This filter can also be
+reversed.</p>
 </div>
 <div id="filter-precedence" class="section level4">
 <h4>Filter precedence</h4>
-<p>In order to extract a subset of an event log which conforms with a set of precedence rules, one can use the <code>filter_precedence</code> method. There are two types of precendence relations which can be tested: activities that should <em>directly follow</em> each other, or activities that should <em>eventually follow</em> each other. The type can be set with the <em>precedence_type</em> argument. Further, the filter requires a vector of one or more antecedents (containing activity labels), and one or more consequents. Finally, also a <em>filter_method</em> argument can be set. This argument is relevant when there is more than one antecedent or consequent. In such a case, you can specify that all possible precedence combinations must be present (<em>all</em>), or at least one of them (_one_of).</p>
+<p>In order to extract a subset of an event log which conforms with a
+set of precedence rules, one can use the <code>filter_precedence</code>
+method. There are two types of precendence relations which can be
+tested: activities that should <em>directly follow</em> each other, or
+activities that should <em>eventually follow</em> each other. The type
+can be set with the <em>precedence_type</em> argument. Further, the
+filter requires a vector of one or more antecedents (containing activity
+labels), and one or more consequents. Finally, also a
+<em>filter_method</em> argument can be set. This argument is relevant
+when there is more than one antecedent or consequent. In such a case,
+you can specify that all possible precedence combinations must be
+present (<em>all</em>), or at least one of them (_one_of).</p>
 </div>
 <div id="filter-processing-time-throughput-time-and-trace-length" class="section level4">
 <h4>Filter processing time, throughput time and trace length</h4>
-<p>There are three different filters which take into account the <em>length</em> of a case:</p>
+<p>There are three different filters which take into account the
+<em>length</em> of a case:</p>
 <ul>
-<li>processing time: which is the sum of the duration of the activity instances contained in the case.</li>
-<li>throughput time: which is the time between the first event and the last event of the case.</li>
-<li>trace length: which is the number of activity instances contained in the case.</li>
+<li>processing time: which is the sum of the duration of the activity
+instances contained in the case.</li>
+<li>throughput time: which is the time between the first event and the
+last event of the case.</li>
+<li>trace length: which is the number of activity instances contained in
+the case.</li>
 </ul>
-<p>Each of these filters can work in two ways, similar to the endpoints filter: either by using an interval or by using a percentile cut off. The percentile cut off will always start with the shortest cases first and stop including cases when the specified percentile is reached. The processing and throughput time filters also have a <em>units</em> attribute to specify the time unit used when defining an interval. All the methods can be reversed by setting <code>reverse = T</code>.</p>
+<p>Each of these filters can work in two ways, similar to the endpoints
+filter: either by using an interval or by using a percentile cut off.
+The percentile cut off will always start with the shortest cases first
+and stop including cases when the specified percentile is reached. The
+processing and throughput time filters also have a <em>units</em>
+attribute to specify the time unit used when defining an interval. All
+the methods can be reversed by setting <code>reverse = T</code>.</p>
 </div>
 <div id="filter-time-period" class="section level4">
 <h4>Filter time period</h4>
-<p>Cases can also be filtered by supplying a time window to the method <code>filter_time_period</code>. There are four different filter methods, of which one can be used as argument:</p>
+<p>Cases can also be filtered by supplying a time window to the method
+<code>filter_time_period</code>. There are four different filter
+methods, of which one can be used as argument:</p>
 <ul>
-<li>contained: retains all cases which are completely contained in the time period.</li>
-<li>start: retains the cases which started in the time period, regardless of their end point.</li>
-<li>complete: retains the cases which were completed in the time period, regardless of their starting point.</li>
-<li>intersecting: retains the cases which have at least one event within the time period.</li>
+<li>contained: retains all cases which are completely contained in the
+time period.</li>
+<li>start: retains the cases which started in the time period,
+regardless of their end point.</li>
+<li>complete: retains the cases which were completed in the time period,
+regardless of their starting point.</li>
+<li>intersecting: retains the cases which have at least one event within
+the time period.</li>
 </ul>
-<p>The selection can also be reversed. Note that there is a 5 filter method, <em>trim</em>, but this is actually an event filter and will thus be discussed in the next section.</p>
+<p>The selection can also be reversed. Note that there is a 5 filter
+method, <em>trim</em>, but this is actually an event filter and will
+thus be discussed in the next section.</p>
 </div>
 <div id="filter-trace-frequency" class="section level4">
 <h4>Filter trace frequency</h4>
-<p>The last case filter can be used to filter cases based on the frequency of the corresponding trace. A trace is a sequence of activity labels, and will be discussed in more detail in Section . There are again two ways to select cases based on trace frequency, by interval or by percentile cut off. The percentile cut off will start with the most frequent traces. This filter also contains the reverse argument.</p>
+<p>The last case filter can be used to filter cases based on the
+frequency of the corresponding trace. A trace is a sequence of activity
+labels, and will be discussed in more detail in Section <span class="math inline">\(\ref{mining-and-analysis-1}\)</span>. There are
+again two ways to select cases based on trace frequency, by interval or
+by percentile cut off. The percentile cut off will start with the most
+frequent traces. This filter also contains the reverse argument.</p>
 </div>
 </div>
 

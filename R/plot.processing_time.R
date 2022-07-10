@@ -50,7 +50,7 @@ plot_processing_time <- function(x, ...) {
 	}
 	else if(level == "resource-activity") {
 		attr(x, "raw") %>%
-			ggplot(aes_string(mapping$activity_id, "processing_time", color = mapping$resource_id)) +
+			ggplot(aes_string(mapping$activity_identifier, "processing_time", color = mapping$resource_identifier)) +
 			geom_boxplot() +
 			scale_y_continuous() +
 			theme_light() +
@@ -58,8 +58,8 @@ plot_processing_time <- function(x, ...) {
 			labs(x = "Activity", y = glue("Processing time (in {units})")) -> p
 	}
 
-	if(!is.null(attr(x, "groups"))) {
-		p <-	p + facet_grid(as.formula(paste(c(paste(attr(x, "groups"), collapse = "+"), "~." ), collapse = "")), scales = "free_y")
+	if(!is.null(mapping$groups)) {
+		p <-	p + facet_grid(as.formula(paste(c(paste(mapping$groups, collapse = "+"), "~." ), collapse = "")), scales = "free_y")
 	}
 
 
