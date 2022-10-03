@@ -13,10 +13,10 @@ rework_base <- function(eventlog) {
 
 	eventlog %>%
 		rename("case_classifier" = !!case_id_(eventlog),
-				"event_classifier" = !!activity_id_(eventlog),
-				"timestamp_classifier" = !!timestamp_(eventlog),
-				"aid" = !!activity_instance_id_(eventlog),
-				"resource_classifier" = !!resource_id_(eventlog)) %>%
+			   "event_classifier" = !!activity_id_(eventlog),
+			   "timestamp_classifier" = !!timestamp_(eventlog),
+			   "aid" = !!activity_instance_id_(eventlog),
+			   "resource_classifier" = !!resource_id_(eventlog)) %>%
 		as.data.table %>%
 		.[, .(timestamp = min(timestamp_classifier), min_order = min(.order)), .(case_classifier, aid, event_classifier, resource_classifier)] %>%
 		.[order(timestamp, min_order), .SD , by =  .(case_classifier)] %>%

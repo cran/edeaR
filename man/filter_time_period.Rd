@@ -6,7 +6,6 @@
 \alias{filter_time_period.grouped_eventlog}
 \alias{filter_time_period.activitylog}
 \alias{filter_time_period.grouped_activitylog}
-\alias{ifilter_time_period}
 \title{Filter Time Period}
 \usage{
 filter_time_period(
@@ -53,8 +52,6 @@ filter_time_period(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_time_period(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -94,15 +91,15 @@ values for \code{filter_method}:
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eventlog}: Filters activity instances for an \code{\link[bupaR]{eventlog}}.
+\item \code{filter_time_period(eventlog)}: Filters activity instances for an \code{\link[bupaR]{eventlog}}.
 
-\item \code{grouped_eventlog}: Filters activity instances for a \code{\link[bupaR]{grouped_eventlog}}.
+\item \code{filter_time_period(grouped_eventlog)}: Filters activity instances for a \code{\link[bupaR]{grouped_eventlog}}.
 
-\item \code{activitylog}: Filters activity instances for an \code{\link[bupaR]{activitylog}}.
+\item \code{filter_time_period(activitylog)}: Filters activity instances for an \code{\link[bupaR]{activitylog}}.
 
-\item \code{grouped_activitylog}: Filters activity instances for a \code{\link[bupaR]{grouped_activitylog}}.
+\item \code{filter_time_period(grouped_activitylog)}: Filters activity instances for a \code{\link[bupaR]{grouped_activitylog}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -133,4 +130,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_event}

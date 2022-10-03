@@ -185,17 +185,18 @@ return_metric <- function(eventlog, output, level, append, append_column, metric
 
 summary_statistics <- function(vector) {
 
-	# TODO: summary does not work for difftime. Temp work-around: as.double(vector)
-	s <- summary(as.double(vector))
-	s <- c(s, St.Dev = sd(vector))
-	s <- c(s, IQR = s[5] - s[2])
-	names(s) <- c("min","q1","median","mean","q3","max","st_dev","iqr")
+  vector %>%
+    as_tibble() %>%
+    summarise("min" = min(vector),
+              "q1" = quantile(vector, probs = 0.25),
+              "median" = median(vector),
+              "mean" = mean(vector),
+              "q3" = quantile(vector, probs = 0.75),
+              "max" = max(vector),
+              "st_dev" = sd(vector),
+              "iqr" = .data[["q3"]] - .data[["q1"]]) -> s
 
-	s <- as.data.frame(s) %>% t
-	rownames(s) <- NULL
-	s <- as_tibble(s)
-
-	return(s)
+  return(s)
 }
 
 grouped_summary_statistics <- function(data.frame, values, na.rm = T, ...) {
@@ -250,5 +251,15 @@ lifecycle_warning_append <- function (append = deprecated(), append_column = dep
 	}
 
 	return(rlang::maybe_missing(append))
+}
+
+check_activities <- function(specified_activities, found_activities, arg = "activities", call = caller_env(), emit_warning = TRUE) {
+	wrong <- specified_activities[!(specified_activities %in% found_activities)]
+	if (length(wrong) > 0 && emit_warning) {
+		cli_warn(c("{.val {length(wrong)}} specified activit{?y/ies} in {.arg {arg}} not found in {.arg log}.",
+				   "!" = "Activit{?y/ies} not found and ignored: {.val {wrong}}."),
+				 call = call)
+	}
+	specified_activities[!(specified_activities %in% wrong)]
 }
 

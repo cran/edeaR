@@ -6,7 +6,6 @@
 \alias{filter_trim.grouped_eventlog}
 \alias{filter_trim.activitylog}
 \alias{filter_trim.grouped_activitylog}
-\alias{ifilter_trim}
 \title{Trim Cases}
 \usage{
 filter_trim(
@@ -48,8 +47,6 @@ filter_trim(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_trim(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -76,15 +73,15 @@ are retained. As such, this argument allows to cut intermediate parts out of tra
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eventlog}: Filters activity instances for an \code{\link[bupaR]{eventlog}}.
+\item \code{filter_trim(eventlog)}: Filters activity instances for an \code{\link[bupaR]{eventlog}}.
 
-\item \code{grouped_eventlog}: Filters activity instances for a \code{\link[bupaR]{grouped_eventlog}}.
+\item \code{filter_trim(grouped_eventlog)}: Filters activity instances for a \code{\link[bupaR]{grouped_eventlog}}.
 
-\item \code{activitylog}: Filters activity instances for an \code{\link[bupaR]{activitylog}}.
+\item \code{filter_trim(activitylog)}: Filters activity instances for an \code{\link[bupaR]{activitylog}}.
 
-\item \code{grouped_activitylog}: Filters activity instances for a \code{\link[bupaR]{grouped_activitylog}}.
+\item \code{filter_trim(grouped_activitylog)}: Filters activity instances for a \code{\link[bupaR]{grouped_activitylog}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -115,4 +112,4 @@ Other filters:
 \code{\link{filter_trim_lifecycle}()}
 }
 \concept{filters}
-\keyword{internals}
+\concept{filters_event}

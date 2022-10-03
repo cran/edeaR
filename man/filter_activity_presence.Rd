@@ -4,7 +4,6 @@
 \alias{filter_activity_presence}
 \alias{filter_activity_presence.log}
 \alias{filter_activity_presence.grouped_log}
-\alias{ifilter_activity_presence}
 \title{Filter Activity Presence}
 \usage{
 filter_activity_presence(
@@ -30,16 +29,14 @@ filter_activity_presence(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_activity_presence(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
 
 \item{activities}{\code{\link{character}} vector: Containing one or more activity identifiers.}
 
-\item{method}{\code{\link{character}} (default \code{"all"}): Filter method: \code{"all"} (default), \code{"none"},
-\code{"one_of"}, \code{"exact"}, or \code{"only"}. For more information, see 'Details' below.}
+\item{method}{\code{\link{character}} (default \code{"all"}): Filter method: \code{"all"} (default), \code{"none"}, \code{"one_of"}, \code{"exact"},
+or \code{"only"}. For more information, see \strong{Details} below.}
 
 \item{reverse}{\code{\link{logical}} (default \code{FALSE}): Indicating whether the selection should be reversed.}
 
@@ -56,7 +53,6 @@ Filters cases based on the presence (or absence) of activities.
 \details{
 This functions allows to filter cases that contain certain activities. It requires as input a vector containing one or more activity labels
 and it has a \code{method} argument with following options:
-
 \itemize{
 \item \code{"all"} means that all the specified activity labels must be present for a case to be selected.
 \item \code{"none"} means that they are not allowed to be present.
@@ -69,11 +65,11 @@ When only one activity label is supplied, note that \code{method}s \code{"all"} 
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{log}: Filters activities for a \code{\link[bupaR]{log}}.
+\item \code{filter_activity_presence(log)}: Filters activities for a \code{\link[bupaR:log]{log}}.
 
-\item \code{grouped_log}: Filters activities for a \code{\link[bupaR]{grouped_log}}.
+\item \code{filter_activity_presence(grouped_log)}: Filters activities for a \code{\link[bupaR:grouped_log]{grouped_log}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -104,4 +100,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internals}
+\concept{filters_case}

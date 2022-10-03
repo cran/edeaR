@@ -4,7 +4,6 @@
 \alias{filter_lifecycle_presence}
 \alias{filter_lifecycle_presence.eventlog}
 \alias{filter_lifecycle_presence.grouped_eventlog}
-\alias{ifilter_lifecycle_presence}
 \title{Filter Life Cycle Presence}
 \usage{
 filter_lifecycle_presence(
@@ -33,16 +32,14 @@ filter_lifecycle_presence(
   lifecycle = deprecated(),
   eventlog = deprecated()
 )
-
-ifilter_lifecycle_presence(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{eventlog}}: Object of class \code{\link[bupaR]{eventlog}} or derivatives (\code{\link[bupaR]{grouped_eventlog}}).}
 
 \item{lifecycles}{\code{\link{character}} vector: A vector of life cycle identifiers.}
 
-\item{method}{\code{\link{character}} (default \code{"all"}): Filter method: \code{"all"} (default), \code{"none"},
-\code{"one_of"}, \code{"exact"}, or \code{"only"}. For more information, see 'Details' below.}
+\item{method}{\code{\link{character}} (default \code{"all"}): Filter method: \code{"all"} (default), \code{"none"}, \code{"one_of"}, \code{"exact"},
+or \code{"only"}. For more information, see \strong{Details} below.}
 
 \item{reverse}{\code{\link{logical}} (default \code{FALSE}): Indicating whether the selection should be reversed.}
 
@@ -71,11 +68,11 @@ input a vector containing one or more life cycle labels and it has a \code{metho
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eventlog}: Filters activity instances on the presence of life cycle labels for an \code{\link[bupaR]{eventlog}}.
+\item \code{filter_lifecycle_presence(eventlog)}: Filters activity instances on the presence of life cycle labels for an \code{\link[bupaR]{eventlog}}.
 
-\item \code{grouped_eventlog}: Filters activity instances on the presence of life cycle labels for a \code{\link[bupaR]{grouped_eventlog}}.
+\item \code{filter_lifecycle_presence(grouped_eventlog)}: Filters activity instances on the presence of life cycle labels for a \code{\link[bupaR]{grouped_eventlog}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -108,4 +105,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_event}

@@ -4,7 +4,6 @@
 \alias{filter_activity_frequency}
 \alias{filter_activity_frequency.log}
 \alias{filter_activity_frequency.grouped_log}
-\alias{ifilter_activity_frequency}
 \title{Filter Activity Frequency}
 \usage{
 filter_activity_frequency(
@@ -30,8 +29,6 @@ filter_activity_frequency(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_activity_frequency(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -69,11 +66,11 @@ e.g., \code{c(10, NA)} will select activity labels which occur 10 times or more.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{log}: Filters activities for a \code{\link[bupaR]{log}}.
+\item \code{filter_activity_frequency(log)}: Filters activities for a \code{\link[bupaR]{log}}.
 
-\item \code{grouped_log}: Filters activities for a \code{\link[bupaR]{grouped_log}}.
+\item \code{filter_activity_frequency(grouped_log)}: Filters activities for a \code{\link[bupaR]{grouped_log}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -104,4 +101,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_event}

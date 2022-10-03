@@ -4,7 +4,6 @@
 \alias{filter_throughput_time}
 \alias{filter_throughput_time.log}
 \alias{filter_throughput_time.grouped_log}
-\alias{ifilter_throughput_time}
 \title{Filter Throughput Time}
 \usage{
 filter_throughput_time(
@@ -33,8 +32,6 @@ filter_throughput_time(
   units = c("auto", "secs", "mins", "hours", "days", "weeks"),
   eventlog = deprecated()
 )
-
-ifilter_throughput_time(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -66,11 +63,11 @@ in which this interval is defined can be supplied with the \code{units} argument
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{log}: Filters cases for a \code{\link[bupaR]{log}}.
+\item \code{filter_throughput_time(log)}: Filters cases for a \code{\link[bupaR]{log}}.
 
-\item \code{grouped_log}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+\item \code{filter_throughput_time(grouped_log)}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -103,4 +100,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_case}

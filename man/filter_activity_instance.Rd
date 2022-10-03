@@ -4,7 +4,6 @@
 \alias{filter_activity_instance}
 \alias{filter_activity_instance.eventlog}
 \alias{filter_activity_instance.grouped_eventlog}
-\alias{ifilter_activity_instance}
 \title{Filter Activity Instance}
 \usage{
 filter_activity_instance(
@@ -27,8 +26,6 @@ filter_activity_instance(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_activity_instance(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{eventlog}}: Object of class \code{\link[bupaR]{eventlog}} or derivatives (\code{\link[bupaR]{grouped_eventlog}}).}
@@ -50,11 +47,11 @@ to which a vector of identifiers can be given. The selection can be negated with
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{eventlog}: Filters activities for an \code{\link[bupaR]{eventlog}}.
+\item \code{filter_activity_instance(eventlog)}: Filters activities for an \code{\link[bupaR]{eventlog}}.
 
-\item \code{grouped_eventlog}: Filters activities for a \code{\link[bupaR]{grouped_eventlog}}.
+\item \code{filter_activity_instance(grouped_eventlog)}: Filters activities for a \code{\link[bupaR]{grouped_eventlog}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -85,4 +82,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internals}
+\concept{filters_event}

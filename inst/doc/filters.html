@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2022-07-10" />
+<meta name="date" content="2022-10-03" />
 
 <title>Filters</title>
 
@@ -122,13 +122,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -334,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author">Gert Janssenswillen</h4>
-<h4 class="date">2022-07-10</h4>
+<h4 class="date">2022-10-03</h4>
 
 
 
@@ -381,13 +388,13 @@ name. It has three arguments</p>
 ##  Registration         :  0                      r5:522                     
 ##  Triage and Assessment:  0                      r6:  0                     
 ##  X-Ray                :522                      r7:  0                     
-##  registration_type      time                         .order     
-##  complete:498      Min.   :2017-01-05 08:59:04   Min.   :  1.0  
-##  start   :498      1st Qu.:2017-05-06 12:31:43   1st Qu.:249.8  
-##                    Median :2017-09-08 00:10:11   Median :498.5  
-##                    Mean   :2017-09-03 07:11:55   Mean   :498.5  
-##                    3rd Qu.:2017-12-23 02:06:20   3rd Qu.:747.2  
-##                    Max.   :2018-05-05 01:34:30   Max.   :996.0  
+##  registration_type      time                            .order     
+##  complete:498      Min.   :2017-01-05 08:59:04.00   Min.   :  1.0  
+##  start   :498      1st Qu.:2017-05-06 12:31:43.00   1st Qu.:249.8  
+##                    Median :2017-09-08 00:10:11.00   Median :498.5  
+##                    Mean   :2017-09-03 07:11:55.96   Mean   :498.5  
+##                    3rd Qu.:2017-12-23 02:06:20.50   3rd Qu.:747.2  
+##                    Max.   :2018-05-05 01:34:30.00   Max.   :996.0  
 ## </code></pre>
 <p>As one can see, there are only 2 distinct activities left in the
 event log.</p>
@@ -404,7 +411,7 @@ are selected, since the reverse argument is true.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity_frequency</span>(<span class="at">percentage =</span> <span class="fl">0.5</span>, <span class="at">reverse =</span> T) <span class="sc">%&gt;%</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 4 x 3
+<pre><code>## # A tibble: 4 × 3
 ##   handling   absolute relative
 ##   &lt;fct&gt;         &lt;int&gt;    &lt;dbl&gt;
 ## 1 Check-out       492    0.401
@@ -428,9 +435,7 @@ OR.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_attributes</span>(employee <span class="sc">==</span> <span class="st">&quot;r1&quot;</span> <span class="sc">|</span> handling <span class="sc">==</span> <span class="st">&quot;X-Ray&quot;</span>) </span></code></pre></div>
 <pre><code>## Warning: `filter_attributes()` was deprecated in bupaR 0.5.0.
-## Please use `filter()` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+## Please use `filter()` instead.</code></pre>
 <pre><code>## # Log of 1522 events consisting of:
 ## 2 traces 
 ## 500 cases 
@@ -446,20 +451,20 @@ OR.</p>
 ## Timestamp:           time 
 ## Lifecycle transition:        registration_type 
 ## 
-## # A tibble: 1,522 x 7
-##    handling    patient employee handling_id registration_ty~ time               
-##    &lt;fct&gt;       &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            &lt;dttm&gt;             
-##  1 Registrati~ 1       r1       1           start            2017-01-02 11:41:53
-##  2 Registrati~ 2       r1       2           start            2017-01-02 11:41:53
-##  3 Registrati~ 3       r1       3           start            2017-01-04 01:34:05
-##  4 Registrati~ 4       r1       4           start            2017-01-04 01:34:04
-##  5 Registrati~ 5       r1       5           start            2017-01-04 16:07:47
-##  6 Registrati~ 6       r1       6           start            2017-01-04 16:07:47
-##  7 Registrati~ 7       r1       7           start            2017-01-05 04:56:11
-##  8 Registrati~ 8       r1       8           start            2017-01-05 04:56:11
-##  9 Registrati~ 9       r1       9           start            2017-01-06 05:58:54
-## 10 Registrati~ 10      r1       10          start            2017-01-06 05:58:54
-## # ... with 1,512 more rows, and 1 more variable: .order &lt;int&gt;</code></pre>
+## # A tibble: 1,522 × 7
+##    handling     patient employee handling_id regist…¹ time                .order
+##    &lt;fct&gt;        &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;    &lt;dttm&gt;               &lt;int&gt;
+##  1 Registration 1       r1       1           start    2017-01-02 11:41:53      1
+##  2 Registration 2       r1       2           start    2017-01-02 11:41:53      2
+##  3 Registration 3       r1       3           start    2017-01-04 01:34:05      3
+##  4 Registration 4       r1       4           start    2017-01-04 01:34:04      4
+##  5 Registration 5       r1       5           start    2017-01-04 16:07:47      5
+##  6 Registration 6       r1       6           start    2017-01-04 16:07:47      6
+##  7 Registration 7       r1       7           start    2017-01-05 04:56:11      7
+##  8 Registration 8       r1       8           start    2017-01-05 04:56:11      8
+##  9 Registration 9       r1       9           start    2017-01-06 05:58:54      9
+## 10 Registration 10      r1       10          start    2017-01-06 05:58:54     10
+## # … with 1,512 more rows, and abbreviated variable name ¹​registration_type</code></pre>
 </div>
 <div id="filter-resources" class="section level3">
 <h3>Filter resources</h3>
@@ -468,20 +473,11 @@ filter events by listing on or more resources.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_resource</span>(<span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 736 x 4
-##    employee handling_id absolute relative
-##    &lt;fct&gt;    &lt;chr&gt;          &lt;int&gt;    &lt;dbl&gt;
-##  1 r1       1                  2  0.00136
-##  2 r1       10                 2  0.00136
-##  3 r1       100                2  0.00136
-##  4 r1       101                2  0.00136
-##  5 r1       102                2  0.00136
-##  6 r1       103                2  0.00136
-##  7 r1       104                2  0.00136
-##  8 r1       105                2  0.00136
-##  9 r1       106                2  0.00136
-## 10 r1       107                2  0.00136
-## # ... with 726 more rows</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##   employee absolute relative
+##   &lt;fct&gt;       &lt;int&gt;    &lt;dbl&gt;
+## 1 r1            500    0.679
+## 2 r4            236    0.321</code></pre>
 </div>
 <div id="trim-cases" class="section level3">
 <h3>Trim cases</h3>
@@ -496,11 +492,12 @@ removed instead of preserved.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_trim</span>(<span class="at">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="at">end_activities =</span>  <span class="fu">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">traces</span>()</span></code></pre></div>
-<pre><code>## # A tibble: 2 x 3
-##   trace                                        absolute_freque~ relative_freque~
-##   &lt;chr&gt;                                                   &lt;int&gt;            &lt;dbl&gt;
-## 1 Registration,Triage and Assessment,X-Ray                  261            0.525
-## 2 Registration,Triage and Assessment,Blood te~              236            0.475</code></pre>
+<pre><code>## # A tibble: 2 × 3
+##   trace                                                  absolute_freq…¹ relat…²
+##   &lt;chr&gt;                                                            &lt;int&gt;   &lt;dbl&gt;
+## 1 Registration,Triage and Assessment,X-Ray                           261   0.525
+## 2 Registration,Triage and Assessment,Blood test,MRI SCAN             236   0.475
+## # … with abbreviated variable names ¹​absolute_frequency, ²​relative_frequency</code></pre>
 </div>
 </div>
 <div id="case-filters" class="section level2">

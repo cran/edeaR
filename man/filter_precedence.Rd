@@ -4,7 +4,6 @@
 \alias{filter_precedence}
 \alias{filter_precedence.log}
 \alias{filter_precedence.grouped_log}
-\alias{ifilter_precedence}
 \title{Filter Precedence Relations}
 \usage{
 filter_precedence(
@@ -36,8 +35,6 @@ filter_precedence(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_precedence(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -78,11 +75,11 @@ at least one of them (\code{"one_of"}), or none (\code{"none"}).
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{log}: Filters cases for a \code{\link[bupaR]{log}}.
+\item \code{filter_precedence(log)}: Filters cases for a \code{\link[bupaR]{log}}.
 
-\item \code{grouped_log}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+\item \code{filter_precedence(grouped_log)}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+
 }}
-
 \examples{
 
 eventdataR::patients \%>\%
@@ -129,4 +126,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_case}

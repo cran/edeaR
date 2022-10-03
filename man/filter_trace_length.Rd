@@ -4,7 +4,6 @@
 \alias{filter_trace_length}
 \alias{filter_trace_length.log}
 \alias{filter_trace_length.grouped_log}
-\alias{ifilter_trace_length}
 \title{Filter Trace Length}
 \usage{
 filter_trace_length(
@@ -30,8 +29,6 @@ filter_trace_length(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_trace_length(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -59,11 +56,11 @@ interval can be defined instead to filter cases which have a length in this inte
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{log}: Filters cases for a \code{\link[bupaR]{log}}.
+\item \code{filter_trace_length(log)}: Filters cases for a \code{\link[bupaR]{log}}.
 
-\item \code{grouped_log}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+\item \code{filter_trace_length(grouped_log)}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -96,4 +93,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_case}

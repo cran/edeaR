@@ -4,7 +4,6 @@
 \alias{filter_trace_frequency}
 \alias{filter_trace_frequency.log}
 \alias{filter_trace_frequency.grouped_log}
-\alias{ifilter_trace_frequency}
 \title{Filter Trace Frequency}
 \usage{
 filter_trace_frequency(
@@ -30,8 +29,6 @@ filter_trace_frequency(
   reverse = FALSE,
   eventlog = deprecated()
 )
-
-ifilter_trace_frequency(eventlog)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
@@ -69,11 +66,11 @@ e.g., \code{c(10, NA)} will select cases with a trace that occurs 10 times or mo
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{log}: Filters cases for a \code{\link[bupaR]{log}}.
+\item \code{filter_trace_frequency(log)}: Filters cases for a \code{\link[bupaR]{log}}.
 
-\item \code{grouped_log}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+\item \code{filter_trace_frequency(grouped_log)}: Filters cases for a \code{\link[bupaR]{grouped_log}}.
+
 }}
-
 \references{
 Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence Techniques (Doctoral dissertation). Hasselt University.
 }
@@ -104,4 +101,4 @@ Other filters:
 \code{\link{filter_trim}()}
 }
 \concept{filters}
-\keyword{internal}
+\concept{filters_case}

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2022-07-10" />
+<meta name="date" content="2022-10-03" />
 
 <title>Performance with work schedules</title>
 
@@ -122,13 +122,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -334,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Performance with work schedules</h1>
 <h4 class="author">Gert Janssenswillen</h4>
-<h4 class="date">2022-07-10</h4>
+<h4 class="date">2022-10-03</h4>
 
 
 
@@ -348,7 +355,7 @@ working hours and holidays.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edeaR)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">create_work_schedule</span>()</span></code></pre></div>
 <pre><code>## Week schedule
-## # A tibble: 7 x 3
+## # A tibble: 7 × 3
 ##     day start_time end_time
 ##   &lt;int&gt; &lt;time&gt;     &lt;time&gt;  
 ## 1     1 09:00      17:00   
@@ -360,26 +367,26 @@ working hours and holidays.</p>
 ## 7     7    NA         NA   
 ## 
 ## Fixed holidays
-## # A tibble: 2 x 3
+## # A tibble: 2 × 3
 ##   month   day name          
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;         
 ## 1     1     1 New Year&#39;s Day
 ## 2    12    25 Christmas     
 ## 
 ## Floating holidays
-## # A tibble: 0 x 2
-## # ... with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
+## # A tibble: 0 × 2
+## # … with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
 ## 
 ## Holiday periods
-## # A tibble: 0 x 2
-## # ... with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
+## # A tibble: 0 × 2
+## # … with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
 <p>It will generate a weekly working hours schedule, defaulting to 9 to
 5 workdays. You can change the day schedule using the arguments
 <code>start_time</code> and/or <code>end_time</code>. The following code
 will generate a work schedule with workdays from 8.30am to 4pm.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_work_schedule</span>(<span class="at">start_time =</span> <span class="st">&quot;08:30:00&quot;</span>, <span class="at">end_time =</span> <span class="st">&quot;16:00:00&quot;</span>)</span></code></pre></div>
 <pre><code>## Week schedule
-## # A tibble: 7 x 3
+## # A tibble: 7 × 3
 ##     day start_time end_time
 ##   &lt;int&gt; &lt;time&gt;     &lt;time&gt;  
 ## 1     1 08:30      16:00   
@@ -391,19 +398,19 @@ will generate a work schedule with workdays from 8.30am to 4pm.</p>
 ## 7     7    NA         NA   
 ## 
 ## Fixed holidays
-## # A tibble: 2 x 3
+## # A tibble: 2 × 3
 ##   month   day name          
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;         
 ## 1     1     1 New Year&#39;s Day
 ## 2    12    25 Christmas     
 ## 
 ## Floating holidays
-## # A tibble: 0 x 2
-## # ... with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
+## # A tibble: 0 × 2
+## # … with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
 ## 
 ## Holiday periods
-## # A tibble: 0 x 2
-## # ... with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
+## # A tibble: 0 × 2
+## # … with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
 <p>Once a work schedule is created, you can also change individal days.
 For example, suppose that on Friday the office closes as 1pm, this can
 be changed as follows. Note that the days are numbered starting on
@@ -411,7 +418,7 @@ monday.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_work_schedule</span>(<span class="at">start_time =</span> <span class="st">&quot;08:30:00&quot;</span>, <span class="at">end_time =</span> <span class="st">&quot;16:00:00&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">change_day</span>(<span class="dv">5</span>, <span class="at">start_time =</span> <span class="st">&quot;08:30:00&quot;</span>, <span class="at">end_time =</span> <span class="st">&quot;13:00:00&quot;</span>)</span></code></pre></div>
 <pre><code>## Week schedule
-## # A tibble: 7 x 3
+## # A tibble: 7 × 3
 ##     day start_time end_time
 ##   &lt;int&gt; &lt;time&gt;     &lt;time&gt;  
 ## 1     1 08:30      16:00   
@@ -423,19 +430,19 @@ monday.</p>
 ## 7     7    NA         NA   
 ## 
 ## Fixed holidays
-## # A tibble: 2 x 3
+## # A tibble: 2 × 3
 ##   month   day name          
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;         
 ## 1     1     1 New Year&#39;s Day
 ## 2    12    25 Christmas     
 ## 
 ## Floating holidays
-## # A tibble: 0 x 2
-## # ... with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
+## # A tibble: 0 × 2
+## # … with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
 ## 
 ## Holiday periods
-## # A tibble: 0 x 2
-## # ... with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
+## # A tibble: 0 × 2
+## # … with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
 <p>Next to the working times, the work schedule also contains
 information on holidays. Three different types should be
 distinguished:</p>
@@ -459,7 +466,7 @@ holidays. In Belgium, this would be the 21st of July.</p>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">change_day</span>(<span class="dv">5</span>, <span class="at">start_time =</span> <span class="st">&quot;08:30:00&quot;</span>, <span class="at">end_time =</span> <span class="st">&quot;13:00:00&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_fixed_holiday</span>(<span class="st">&quot;Belgian National Holiday&quot;</span>, <span class="dv">07</span>, <span class="dv">21</span>)</span></code></pre></div>
 <pre><code>## Week schedule
-## # A tibble: 7 x 3
+## # A tibble: 7 × 3
 ##     day start_time end_time
 ##   &lt;int&gt; &lt;time&gt;     &lt;time&gt;  
 ## 1     1 08:30      16:00   
@@ -471,7 +478,7 @@ holidays. In Belgium, this would be the 21st of July.</p>
 ## 7     7    NA         NA   
 ## 
 ## Fixed holidays
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##   month   day name                    
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                   
 ## 1     1     1 New Year&#39;s Day          
@@ -479,12 +486,12 @@ holidays. In Belgium, this would be the 21st of July.</p>
 ## 3     7    21 Belgian National Holiday
 ## 
 ## Floating holidays
-## # A tibble: 0 x 2
-## # ... with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
+## # A tibble: 0 × 2
+## # … with 2 variables: date &lt;date&gt;, name &lt;chr&gt;
 ## 
 ## Holiday periods
-## # A tibble: 0 x 2
-## # ... with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
+## # A tibble: 0 × 2
+## # … with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
 <p>A typical floating holiday is Easter. However, as Easter falls on a
 Sunday, it is already not taking into account. Nonetheless, let us add
 Easter Monday to the schedule.</p>
@@ -504,7 +511,7 @@ years, which are 2017-04-17 and 2018-04-02.</p>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_fixed_holiday</span>(<span class="st">&quot;Belgian National Holiday&quot;</span>, <span class="dv">07</span>, <span class="dv">21</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_floating_holiday</span>(<span class="st">&quot;Easter Monday&quot;</span>, <span class="fu">ymd</span>(<span class="fu">c</span>(<span class="dv">20170417</span>, <span class="dv">20180402</span>)))</span></code></pre></div>
 <pre><code>## Week schedule
-## # A tibble: 7 x 3
+## # A tibble: 7 × 3
 ##     day start_time end_time
 ##   &lt;int&gt; &lt;time&gt;     &lt;time&gt;  
 ## 1     1 08:30      16:00   
@@ -516,7 +523,7 @@ years, which are 2017-04-17 and 2018-04-02.</p>
 ## 7     7    NA         NA   
 ## 
 ## Fixed holidays
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##   month   day name                    
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                   
 ## 1     1     1 New Year&#39;s Day          
@@ -524,15 +531,15 @@ years, which are 2017-04-17 and 2018-04-02.</p>
 ## 3     7    21 Belgian National Holiday
 ## 
 ## Floating holidays
-## # A tibble: 2 x 2
+## # A tibble: 2 × 2
 ##   date       name         
 ##   &lt;date&gt;     &lt;chr&gt;        
 ## 1 2017-04-17 Easter Monday
 ## 2 2018-04-02 Easter Monday
 ## 
 ## Holiday periods
-## # A tibble: 0 x 2
-## # ... with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
+## # A tibble: 0 × 2
+## # … with 2 variables: from &lt;date&gt;, to &lt;date&gt;</code></pre>
 <p>Finally, let us assume that we don’t work in the period between
 Christmas and New year in 2017. We can add a holiday period from
 December 26th till December 31st.</p>
@@ -543,7 +550,7 @@ December 26th till December 31st.</p>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_floating_holiday</span>(<span class="st">&quot;Easter Monday&quot;</span>, <span class="at">dates =</span> <span class="fu">ymd</span>(<span class="fu">c</span>(<span class="dv">20170417</span>, <span class="dv">20180402</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_holiday_periods</span>(<span class="at">from =</span> <span class="fu">ymd</span>(<span class="dv">20171226</span>), <span class="at">to =</span> <span class="fu">ymd</span>(<span class="dv">20171231</span>))</span></code></pre></div>
 <pre><code>## Week schedule
-## # A tibble: 7 x 3
+## # A tibble: 7 × 3
 ##     day start_time end_time
 ##   &lt;int&gt; &lt;time&gt;     &lt;time&gt;  
 ## 1     1 08:30      16:00   
@@ -555,7 +562,7 @@ December 26th till December 31st.</p>
 ## 7     7    NA         NA   
 ## 
 ## Fixed holidays
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##   month   day name                    
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                   
 ## 1     1     1 New Year&#39;s Day          
@@ -563,14 +570,14 @@ December 26th till December 31st.</p>
 ## 3     7    21 Belgian National Holiday
 ## 
 ## Floating holidays
-## # A tibble: 2 x 2
+## # A tibble: 2 × 2
 ##   date       name         
 ##   &lt;date&gt;     &lt;chr&gt;        
 ## 1 2017-04-17 Easter Monday
 ## 2 2018-04-02 Easter Monday
 ## 
 ## Holiday periods
-## # A tibble: 1 x 2
+## # A tibble: 1 × 2
 ##   from       to        
 ##   &lt;date&gt;     &lt;date&gt;    
 ## 1 2017-12-26 2017-12-31</code></pre>
@@ -593,13 +600,13 @@ time calculation.</p>
 follows.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eventdataR)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> <span class="fu">throughput_time</span>()</span></code></pre></div>
-<pre><code>## # A tibble: 1 x 8
-##     min    q1 median  mean    q3   max st_dev   iqr
-##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-## 1  1.50  4.31   6.09  6.68  8.59  23.1   3.22  4.27</code></pre>
+<pre><code>## # A tibble: 1 × 8
+##   min           q1            median        mean        q3    max   st_dev iqr  
+##   &lt;drtn&gt;        &lt;drtn&gt;        &lt;drtn&gt;        &lt;drtn&gt;      &lt;drt&gt; &lt;drt&gt;  &lt;dbl&gt; &lt;drt&gt;
+## 1 1.496088 days 4.313924 days 6.085509 days 6.676308 d… 8.58… 23.1…   3.22 4.27…</code></pre>
 <p>In order to take into account the working schedule</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> <span class="fu">throughput_time</span>(<span class="at">work_schedule =</span> ws)</span></code></pre></div>
-<pre><code>## # A tibble: 1 x 8
+<pre><code>## # A tibble: 1 × 8
 ##     min    q1 median    mean     q3    max st_dev   iqr
 ##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
 ## 1     0 70200 108000 115625. 151200 426600 59688. 81000</code></pre>
@@ -607,31 +614,31 @@ follows.</p>
 <p>Without taking into account the working hours:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">processing_time</span>(<span class="at">level =</span> <span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 7 x 11
-##   handling              min    q1    mean  median q3    max   st_dev   iqr total
-##   &lt;fct&gt;                 &lt;drtn&gt; &lt;drt&gt; &lt;drt&gt; &lt;drtn&gt; &lt;drt&gt; &lt;drt&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;drt&gt;
-## 1 Registration           49.7~ 124.~ 165.~ 162.8~ 204.~  338~   57.2  79.9  826~
-## 2 Triage and Assessment 352.1~ 681.~ 786.~ 800.4~ 901.~ 1128~  166.  221.  3931~
-## 3 Discuss Results        80.0~ 138.~ 166.~ 166.3~ 193.~  272~   37.7  54.4  824~
-## 4 Check-out              40.0~  96.~ 123.~ 124.3~ 148.~  233~   37.2  51.6  608~
-## 5 X-Ray                 137.6~ 233.~ 290.~ 287.5~ 338.~  490~   76.9 106.   758~
-## 6 Blood test            185.3~ 285.~ 332.~ 328.1~ 376.~  488~   63.6  90.7  787~
-## 7 MRI SCAN              149.3~ 216.~ 248.~ 245.4~ 281.~  355~   44.1  65.4  587~
-## # ... with 1 more variable: relative_frequency &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 7 × 11
+##   handling       min   q1    mean  median q3    max   st_dev   iqr total relat…¹
+##   &lt;fct&gt;          &lt;drt&gt; &lt;drt&gt; &lt;drt&gt; &lt;drtn&gt; &lt;drt&gt; &lt;drt&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;drt&gt;   &lt;dbl&gt;
+## 1 Registration    49.… 124.… 165.… 162.8… 204.…  338…   57.2  79.9  826…  0.184 
+## 2 Triage and As… 352.… 681.… 786.… 800.4… 901.… 1128…  166.  221.  3931…  0.184 
+## 3 Discuss Resul…  80.… 138.… 166.… 166.3… 193.…  272…   37.7  54.4  824…  0.182 
+## 4 Check-out       40.…  96.… 123.… 124.3… 148.…  233…   37.2  51.6  608…  0.181 
+## 5 X-Ray          137.… 233.… 290.… 287.5… 338.…  490…   76.9 106.   758…  0.0959
+## 6 Blood test     185.… 285.… 332.… 328.1… 376.…  488…   63.6  90.7  787…  0.0871
+## 7 MRI SCAN       149.… 216.… 248.… 245.4… 281.…  355…   44.1  65.4  587…  0.0867
+## # … with abbreviated variable name ¹​relative_frequency</code></pre>
 <p>With the working hours:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">processing_time</span>(<span class="at">level =</span> <span class="st">&quot;activity&quot;</span>, <span class="at">work_schedule =</span> ws)</span></code></pre></div>
-<pre><code>## # A tibble: 7 x 11
-##   handling             min    q1   mean median     q3   max st_dev    iqr  total
-##   &lt;fct&gt;              &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 Registration           0     0  2810.     0   2262  27000  6162.  2262  1.40e6
-## 2 Triage and Assess~     0     0 16167. 18338. 27000  27000 11621. 27000  8.08e6
-## 3 Discuss Results        0     0  3552.     0   5652. 27000  6557.  5652. 1.76e6
-## 4 Check-out              0     0  2703.     0   3382  27000  5977.  3382  1.33e6
-## 5 X-Ray                  0     0  7090.  1072  13736  27000  9274. 13736  1.85e6
-## 6 Blood test             0     0  7327.    65  16200  27000  9508. 16200  1.74e6
-## 7 MRI SCAN               0     0  6002.     0  11144  27000  8904. 11144  1.42e6
-## # ... with 1 more variable: relative_frequency &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 7 × 11
+##   handling     min    q1   mean median     q3   max st_dev    iqr  total relat…¹
+##   &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Registrat…     0     0  2810.     0   2262  27000  6162.  2262  1.40e6  0.184 
+## 2 Triage an…     0     0 16167. 18338. 27000  27000 11621. 27000  8.08e6  0.184 
+## 3 Discuss R…     0     0  3552.     0   5652. 27000  6557.  5652. 1.76e6  0.182 
+## 4 Check-out      0     0  2703.     0   3382  27000  5977.  3382  1.33e6  0.181 
+## 5 X-Ray          0     0  7090.  1072  13736  27000  9274. 13736  1.85e6  0.0959
+## 6 Blood test     0     0  7327.    65  16200  27000  9508. 16200  1.74e6  0.0871
+## 7 MRI SCAN       0     0  6002.     0  11144  27000  8904. 11144  1.42e6  0.0867
+## # … with abbreviated variable name ¹​relative_frequency</code></pre>
 </div>
 <div id="caution" class="section level2">
 <h2>Caution</h2>
