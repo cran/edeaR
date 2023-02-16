@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2023-01-15" />
+<meta name="date" content="2023-02-16" />
 
 <title>Filters</title>
 
@@ -340,13 +340,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author">Gert Janssenswillen</h4>
-<h4 class="date">2023-01-15</h4>
+<h4 class="date">2023-02-16</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bupaR)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edeaR)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eventdataR)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bupaR)</span></code></pre></div>
+<pre><code>## Warning: package &#39;bupaR&#39; was built under R version 4.2.2</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edeaR)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eventdataR)</span></code></pre></div>
 <p>The filters for event data subsetting can mostly be divided into two
 type: event filters and case filters. Event filters will subset
 <em>parts</em> of cases based on criteria applied on the events
@@ -368,9 +369,9 @@ name. It has three arguments</p>
 <li>a vector of activities</li>
 <li>the reverse argument (FALSE or TRUE)</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity</span>(<span class="fu">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    summary</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity</span>(<span class="fu">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    summary</span></code></pre></div>
 <pre><code>## Number of events:  996
 ## Number of cases:  498
 ## Number of traces:  2
@@ -407,9 +408,9 @@ a percentile cut off of 80% will look at the activities needed to
 represent 80% of the events. In the example below, the
 <strong>least</strong> frequent activities covering 50% of the event log
 are selected, since the reverse argument is true.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity_frequency</span>(<span class="at">percentage =</span> <span class="fl">0.5</span>, <span class="at">reverse =</span> T) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity_frequency</span>(<span class="at">percentage =</span> <span class="fl">0.5</span>, <span class="at">reverse =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 4 × 3
 ##   handling   absolute relative
 ##   &lt;fct&gt;         &lt;int&gt;    &lt;dbl&gt;
@@ -431,8 +432,8 @@ activity. This filter is thus the same as the combination of
 filter_activity and filter_resource, in case both conditions were
 required. However, it has the advantange of stating both conditions as
 OR.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_attributes</span>(employee <span class="sc">==</span> <span class="st">&quot;r1&quot;</span> <span class="sc">|</span> handling <span class="sc">==</span> <span class="st">&quot;X-Ray&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_attributes</span>(employee <span class="sc">==</span> <span class="st">&quot;r1&quot;</span> <span class="sc">|</span> handling <span class="sc">==</span> <span class="st">&quot;X-Ray&quot;</span>) </span></code></pre></div>
 <pre><code>## Warning: `filter_attributes()` was deprecated in bupaR 0.5.0.
 ## ℹ Please use `filter()` instead.</code></pre>
 <pre><code>## # Log of 1522 events consisting of:
@@ -469,9 +470,9 @@ OR.</p>
 <h3>Filter resources</h3>
 <p>Similar to the activity filter, the resource filter can be used to
 filter events by listing on or more resources.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_resource</span>(<span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_resource</span>(<span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 3
 ##   employee absolute relative
 ##   &lt;fct&gt;       &lt;int&gt;    &lt;dbl&gt;
@@ -488,9 +489,9 @@ one for end activities. The cases will be trimmed from the first
 appearance of a start activity till the last appearance of an end
 activity. When reversed, these <em>slices</em> of the event log will be
 removed instead of preserved.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_trim</span>(<span class="at">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="at">end_activities =</span>  <span class="fu">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">traces</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_trim</span>(<span class="at">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="at">end_activities =</span>  <span class="fu">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">traces</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 3
 ##   trace                                                  absolute_freq…¹ relat…²
 ##   &lt;chr&gt;                                                            &lt;int&gt;   &lt;dbl&gt;
