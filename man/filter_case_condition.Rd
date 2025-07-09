@@ -6,42 +6,20 @@
 \alias{filter_case_condition.grouped_log}
 \title{Filter Case Condition}
 \usage{
-filter_case_condition(
-  log,
-  ...,
-  condition = NULL,
-  reverse = FALSE,
-  eventlog = deprecated()
-)
+filter_case_condition(log, ..., reverse = FALSE)
 
-\method{filter_case_condition}{log}(
-  log,
-  ...,
-  condition = deprecated(),
-  reverse = FALSE,
-  eventlog = deprecated()
-)
+\method{filter_case_condition}{log}(log, ..., reverse = FALSE)
 
-\method{filter_case_condition}{grouped_log}(
-  log,
-  ...,
-  condition = deprecated(),
-  reverse = FALSE,
-  eventlog = deprecated()
-)
+\method{filter_case_condition}{grouped_log}(log, ..., reverse = FALSE)
 }
 \arguments{
 \item{log}{\code{\link[bupaR]{log}}: Object of class \code{\link[bupaR]{log}} or derivatives (\code{\link[bupaR]{grouped_log}}, \code{\link[bupaR]{eventlog}}, \code{\link[bupaR]{activitylog}}, etc.).}
 
-\item{...}{\code{\link[=dplyr_data_masking]{data-masking}}: Expressions that return a logical value, and are defined in terms of the variables in \code{log}.
+\item{...}{Expressions that return a logical value, and are defined in terms of the variables in \code{log}.
 If multiple expressions are included, they are combined with the \code{&} operator. Only rows for which all conditions evaluate to \code{TRUE} are kept.
 For more information, see \code{\link[dplyr]{filter}}.}
 
-\item{condition}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}; please use \code{\link[=dplyr_data_masking]{data-masking}} expressions instead.}
-
 \item{reverse}{\code{\link{logical}} (default \code{FALSE}): Indicating whether the selection should be reversed.}
-
-\item{eventlog}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}; please use \code{log} instead.}
 }
 \value{
 When given an object of type \code{\link[bupaR]{log}}, it will return a filtered \code{\link[bupaR]{log}}.
@@ -65,31 +43,31 @@ Swennen, M. (2018). Using Event Log Knowledge to Support Operational Exellence T
 \code{\link[dplyr]{filter}}
 
 Other filters: 
+\code{\link{filter_activity}()},
 \code{\link{filter_activity_frequency}()},
 \code{\link{filter_activity_instance}()},
 \code{\link{filter_activity_presence}()},
-\code{\link{filter_activity}()},
 \code{\link{filter_case}()},
-\code{\link{filter_endpoints_condition}()},
 \code{\link{filter_endpoints}()},
+\code{\link{filter_endpoints_condition}()},
 \code{\link{filter_flow_time}()},
 \code{\link{filter_idle_time}()},
 \code{\link{filter_infrequent_flows}()},
-\code{\link{filter_lifecycle_presence}()},
 \code{\link{filter_lifecycle}()},
+\code{\link{filter_lifecycle_presence}()},
+\code{\link{filter_precedence}()},
 \code{\link{filter_precedence_condition}()},
 \code{\link{filter_precedence_resource}()},
-\code{\link{filter_precedence}()},
 \code{\link{filter_processing_time}()},
-\code{\link{filter_resource_frequency}()},
 \code{\link{filter_resource}()},
+\code{\link{filter_resource_frequency}()},
 \code{\link{filter_throughput_time}()},
 \code{\link{filter_time_period}()},
+\code{\link{filter_trace}()},
 \code{\link{filter_trace_frequency}()},
 \code{\link{filter_trace_length}()},
-\code{\link{filter_trace}()},
-\code{\link{filter_trim_lifecycle}()},
-\code{\link{filter_trim}()}
+\code{\link{filter_trim}()},
+\code{\link{filter_trim_lifecycle}()}
 }
 \concept{filters}
 \concept{filters_case}

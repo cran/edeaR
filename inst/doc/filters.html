@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gert Janssenswillen" />
 
-<meta name="date" content="2023-04-26" />
+<meta name="date" content="2025-07-07" />
 
 <title>Filters</title>
 
@@ -51,7 +51,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,14 +340,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Filters</h1>
 <h4 class="author">Gert Janssenswillen</h4>
-<h4 class="date">2023-04-26</h4>
+<h4 class="date">2025-07-07</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bupaR)</span></code></pre></div>
-<pre><code>## Warning: package &#39;bupaR&#39; was built under R version 4.2.3</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edeaR)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eventdataR)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(bupaR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(edeaR)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(eventdataR)</span></code></pre></div>
 <p>The filters for event data subsetting can mostly be divided into two
 type: event filters and case filters. Event filters will subset
 <em>parts</em> of cases based on criteria applied on the events
@@ -369,9 +368,9 @@ name. It has three arguments</p>
 <li>a vector of activities</li>
 <li>the reverse argument (FALSE or TRUE)</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity</span>(<span class="fu">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    summary</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">filter_activity</span>(<span class="fu">c</span>(<span class="st">&quot;X-Ray&quot;</span>, <span class="st">&quot;Blood test&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    summary</span></code></pre></div>
 <pre><code>## Number of events:  996
 ## Number of cases:  498
 ## Number of traces:  2
@@ -388,13 +387,13 @@ name. It has three arguments</p>
 ##  Registration         :  0                      r5:522                     
 ##  Triage and Assessment:  0                      r6:  0                     
 ##  X-Ray                :522                      r7:  0                     
-##  registration_type      time                            .order     
-##  complete:498      Min.   :2017-01-05 08:59:04.00   Min.   :  1.0  
-##  start   :498      1st Qu.:2017-05-06 12:31:43.00   1st Qu.:249.8  
-##                    Median :2017-09-08 00:10:11.00   Median :498.5  
-##                    Mean   :2017-09-03 07:11:55.96   Mean   :498.5  
-##                    3rd Qu.:2017-12-23 02:06:20.50   3rd Qu.:747.2  
-##                    Max.   :2018-05-05 01:34:30.00   Max.   :996.0  
+##  registration_type      time                         .order     
+##  complete:498      Min.   :2017-01-05 08:59:04   Min.   :  1.0  
+##  start   :498      1st Qu.:2017-05-06 12:31:43   1st Qu.:249.8  
+##                    Median :2017-09-08 00:10:11   Median :498.5  
+##                    Mean   :2017-09-03 07:11:55   Mean   :498.5  
+##                    3rd Qu.:2017-12-23 02:06:20   3rd Qu.:747.2  
+##                    Max.   :2018-05-05 01:34:30   Max.   :996.0  
 ## </code></pre>
 <p>As one can see, there are only 2 distinct activities left in the
 event log.</p>
@@ -408,9 +407,9 @@ a percentile cut off of 80% will look at the activities needed to
 represent 80% of the events. In the example below, the
 <strong>least</strong> frequent activities covering 50% of the event log
 are selected, since the reverse argument is true.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_activity_frequency</span>(<span class="at">percentage =</span> <span class="fl">0.5</span>, <span class="at">reverse =</span> T) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="fu">filter_activity_frequency</span>(<span class="at">percentage =</span> <span class="fl">0.5</span>, <span class="at">reverse =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="fu">activity_frequency</span>(<span class="st">&quot;activity&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 4 × 3
 ##   handling   absolute relative
 ##   &lt;fct&gt;         &lt;int&gt;    &lt;dbl&gt;
@@ -432,10 +431,13 @@ activity. This filter is thus the same as the combination of
 filter_activity and filter_resource, in case both conditions were
 required. However, it has the advantange of stating both conditions as
 OR.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_attributes</span>(employee <span class="sc">==</span> <span class="st">&quot;r1&quot;</span> <span class="sc">|</span> handling <span class="sc">==</span> <span class="st">&quot;X-Ray&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>patients <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>    <span class="fu">filter_attributes</span>(employee <span class="sc">==</span> <span class="st">&quot;r1&quot;</span> <span class="sc">|</span> handling <span class="sc">==</span> <span class="st">&quot;X-Ray&quot;</span>) </span></code></pre></div>
 <pre><code>## Warning: `filter_attributes()` was deprecated in bupaR 0.5.0.
-## ℹ Please use `filter()` instead.</code></pre>
+## ℹ Please use `filter()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
 <pre><code>## # Log of 1522 events consisting of:
 ## 2 traces 
 ## 500 cases 
@@ -452,27 +454,28 @@ OR.</p>
 ## Lifecycle transition:        registration_type 
 ## 
 ## # A tibble: 1,522 × 7
-##    handling     patient employee handling_id regist…¹ time                .order
-##    &lt;fct&gt;        &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;    &lt;dttm&gt;               &lt;int&gt;
-##  1 Registration 1       r1       1           start    2017-01-02 11:41:53      1
-##  2 Registration 2       r1       2           start    2017-01-02 11:41:53      2
-##  3 Registration 3       r1       3           start    2017-01-04 01:34:05      3
-##  4 Registration 4       r1       4           start    2017-01-04 01:34:04      4
-##  5 Registration 5       r1       5           start    2017-01-04 16:07:47      5
-##  6 Registration 6       r1       6           start    2017-01-04 16:07:47      6
-##  7 Registration 7       r1       7           start    2017-01-05 04:56:11      7
-##  8 Registration 8       r1       8           start    2017-01-05 04:56:11      8
-##  9 Registration 9       r1       9           start    2017-01-06 05:58:54      9
-## 10 Registration 10      r1       10          start    2017-01-06 05:58:54     10
-## # … with 1,512 more rows, and abbreviated variable name ¹​registration_type</code></pre>
+##    handling   patient employee handling_id registration_type time               
+##    &lt;fct&gt;      &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;             &lt;dttm&gt;             
+##  1 Registrat… 1       r1       1           start             2017-01-02 11:41:53
+##  2 Registrat… 2       r1       2           start             2017-01-02 11:41:53
+##  3 Registrat… 3       r1       3           start             2017-01-04 01:34:05
+##  4 Registrat… 4       r1       4           start             2017-01-04 01:34:04
+##  5 Registrat… 5       r1       5           start             2017-01-04 16:07:47
+##  6 Registrat… 6       r1       6           start             2017-01-04 16:07:47
+##  7 Registrat… 7       r1       7           start             2017-01-05 04:56:11
+##  8 Registrat… 8       r1       8           start             2017-01-05 04:56:11
+##  9 Registrat… 9       r1       9           start             2017-01-06 05:58:54
+## 10 Registrat… 10      r1       10          start             2017-01-06 05:58:54
+## # ℹ 1,512 more rows
+## # ℹ 1 more variable: .order &lt;int&gt;</code></pre>
 </div>
 <div id="filter-resources" class="section level3">
 <h3>Filter resources</h3>
 <p>Similar to the activity filter, the resource filter can be used to
 filter events by listing on or more resources.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_resource</span>(<span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>    <span class="fu">filter_resource</span>(<span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>,<span class="st">&quot;r4&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="fu">resource_frequency</span>(<span class="st">&quot;resource&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 3
 ##   employee absolute relative
 ##   &lt;fct&gt;       &lt;int&gt;    &lt;dbl&gt;
@@ -489,15 +492,14 @@ one for end activities. The cases will be trimmed from the first
 appearance of a start activity till the last appearance of an end
 activity. When reversed, these <em>slices</em> of the event log will be
 removed instead of preserved.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_trim</span>(<span class="at">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="at">end_activities =</span>  <span class="fu">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">traces</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>patients <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>    <span class="fu">filter_trim</span>(<span class="at">start_activities =</span> <span class="st">&quot;Registration&quot;</span>, <span class="at">end_activities =</span>  <span class="fu">c</span>(<span class="st">&quot;MRI SCAN&quot;</span>,<span class="st">&quot;X-Ray&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">traces</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 3
-##   trace                                                  absolute_freq…¹ relat…²
-##   &lt;chr&gt;                                                            &lt;int&gt;   &lt;dbl&gt;
-## 1 Registration,Triage and Assessment,X-Ray                           261   0.525
-## 2 Registration,Triage and Assessment,Blood test,MRI SCAN             236   0.475
-## # … with abbreviated variable names ¹​absolute_frequency, ²​relative_frequency</code></pre>
+##   trace                                    absolute_frequency relative_frequency
+##   &lt;chr&gt;                                                 &lt;int&gt;              &lt;dbl&gt;
+## 1 Registration,Triage and Assessment,X-Ray                261              0.525
+## 2 Registration,Triage and Assessment,Bloo…                236              0.475</code></pre>
 </div>
 </div>
 <div id="case-filters" class="section level2">
